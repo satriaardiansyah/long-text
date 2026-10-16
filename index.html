@@ -1,0 +1,2484 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Speed Drill Kata Panjang (>15 Huruf) - Typing Practice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=JetBrains+Mono:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0b0c13;
+      --surface: #141522;
+      --surface2: #1b1c2e;
+      --surface3: #23253b;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-hover: rgba(255, 255, 255, 0.16);
+      --accent: #f7c948;
+      --accent-glow: rgba(247, 201, 72, 0.25);
+      --accent2: #ff6b9d;
+      --accent3: #6ee7b7;
+      --accent3-glow: rgba(110, 231, 183, 0.3);
+      --danger: #ff5252;
+      --text: #f0f1f8;
+      --text-dim: #7f86a3;
+      --text-muted: #5e6482;
+      --radius: 16px;
+      --font-sans: "Outfit", "DM Sans", sans-serif;
+      --font-mono: "JetBrains Mono", monospace;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px 12px 36px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      position: relative;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: -10%;
+      left: -10%;
+      width: 120%;
+      height: 120%;
+      background: radial-gradient(circle at 15% 15%, rgba(247, 201, 72, 0.04) 0%, transparent 45%),
+        radial-gradient(circle at 85% 85%, rgba(110, 231, 183, 0.04) 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(255, 107, 157, 0.02) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* HEADER */
+    header {
+      width: 100%;
+      max-width: 1060px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      z-index: 10;
+      gap: 10px;
+    }
+
+    .logo-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-group h1 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #fff 30%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logo-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 3px 8px;
+      background: rgba(247, 201, 72, 0.12);
+      color: var(--accent);
+      border: 1px solid rgba(247, 201, 72, 0.3);
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .header-nav-btn {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .header-nav-btn:hover {
+      color: var(--text);
+      background: var(--surface2);
+      border-color: var(--border-hover);
+      transform: translateY(-1px);
+    }
+
+    /* MAIN WRAPPER */
+    main {
+      width: 100%;
+      max-width: 1060px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      z-index: 10;
+    }
+
+    /* PRESETS BAR */
+    .presets-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    }
+
+    .presets-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .presets-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .presets-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .action-pill-btn {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .action-pill-btn:hover {
+      background: var(--surface3);
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .action-pill-btn.primary {
+      background: rgba(247, 201, 72, 0.15);
+      color: var(--accent);
+      border-color: rgba(247, 201, 72, 0.35);
+    }
+
+    .presets-chips {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .presets-chips::-webkit-scrollbar {
+      display: none;
+    }
+
+    .preset-chip {
+      flex-shrink: 0;
+      padding: 6px 12px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      color: var(--text-dim);
+      cursor: pointer;
+      transition: all 0.18s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .preset-chip .len-badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 1px 6px;
+      border-radius: 6px;
+      color: var(--text-muted);
+    }
+
+    .preset-chip:hover {
+      color: var(--text);
+      background: var(--surface3);
+      border-color: var(--border-hover);
+    }
+
+    .preset-chip.active {
+      background: rgba(247, 201, 72, 0.15);
+      color: var(--accent);
+      border-color: rgba(247, 201, 72, 0.4);
+      box-shadow: 0 0 12px rgba(247, 201, 72, 0.15);
+    }
+
+    .preset-chip.active .len-badge {
+      background: rgba(247, 201, 72, 0.25);
+      color: var(--accent);
+    }
+
+    /* TARGET WORD BANNER */
+    .target-word-card {
+      background: linear-gradient(145deg, var(--surface) 0%, var(--surface2) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .target-word-card::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 140px;
+      height: 140px;
+      background: radial-gradient(circle, rgba(247, 201, 72, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .target-word-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .target-badges {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .meta-tag {
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .meta-tag.length {
+      background: rgba(110, 231, 183, 0.15);
+      color: var(--accent3);
+      border: 1px solid rgba(110, 231, 183, 0.3);
+    }
+
+    .meta-tag.difficulty {
+      background: rgba(255, 107, 157, 0.15);
+      color: var(--accent2);
+      border: 1px solid rgba(255, 107, 157, 0.3);
+    }
+
+    .meta-tag.pb {
+      background: rgba(247, 201, 72, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(247, 201, 72, 0.3);
+    }
+
+    .target-word-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-btn-small {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      border-radius: 8px;
+      padding: 4px 8px;
+      font-size: 0.76rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+
+    .icon-btn-small:hover {
+      color: var(--text);
+      background: var(--surface3);
+      border-color: var(--border-hover);
+    }
+
+    .target-word-display {
+      font-family: var(--font-mono);
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      color: #ffffff;
+      word-break: break-all;
+      line-height: 1.4;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    /* TYPING ARENA */
+    .typing-arena-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+    }
+
+    /* LIVE STATS BAR */
+    .stats-panel {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      padding: 14px 18px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    .stat-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 3px;
+    }
+
+    .stat-box .stat-label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .stat-box .stat-value {
+      font-family: var(--font-mono);
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .stat-box.timer .stat-value {
+      color: var(--accent);
+      text-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .stat-box.cps .stat-value {
+      color: var(--accent3);
+    }
+
+    /* PROGRESS BAR */
+    .progress-bar-wrap {
+      width: 100%;
+      height: 8px;
+      background: var(--surface2);
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent) 0%, var(--accent3) 100%);
+      border-radius: 10px;
+      transition: width 0.1s linear;
+      box-shadow: 0 0 8px rgba(110, 231, 183, 0.5);
+    }
+
+    /* INTERACTIVE LETTER VISUALIZER */
+    .word-typing-box {
+      min-height: 130px;
+      background: var(--surface2);
+      border: 2px dashed rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      padding: 24px;
+      cursor: text;
+      position: relative;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      align-items: center;
+      gap: 3px 2px;
+      font-family: var(--font-mono);
+      font-size: 1.75rem;
+      line-height: 1.6;
+      user-select: none;
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+
+    .word-typing-box.focused {
+      border-color: rgba(247, 201, 72, 0.5);
+      border-style: solid;
+      box-shadow: 0 0 20px rgba(247, 201, 72, 0.1);
+    }
+
+    .word-typing-box.success {
+      border-color: var(--accent3);
+      border-style: solid;
+      box-shadow: 0 0 25px var(--accent3-glow);
+    }
+
+    .letter-char {
+      position: relative;
+      color: var(--text-muted);
+      transition: color 0.1s, transform 0.1s;
+      border-radius: 4px;
+      padding: 0 1px;
+    }
+
+    .letter-char.correct {
+      color: var(--accent3);
+      font-weight: 700;
+      text-shadow: 0 0 8px rgba(110, 231, 183, 0.4);
+    }
+
+    .letter-char.incorrect {
+      color: var(--danger);
+      background: rgba(255, 82, 82, 0.2);
+      font-weight: 700;
+      border-radius: 3px;
+      animation: shake 0.2s ease-in-out;
+    }
+
+    .letter-char.current {
+      color: #ffffff;
+      background: rgba(247, 201, 72, 0.2);
+      box-shadow: 0 0 8px var(--accent-glow);
+      border-radius: 3px;
+    }
+
+    .letter-char.current::after {
+      content: "";
+      position: absolute;
+      bottom: 2px;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--accent);
+      border-radius: 2px;
+      animation: blink 0.9s infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0;
+      }
+    }
+
+    @keyframes shake {
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      25% {
+        transform: translateX(-3px);
+      }
+
+      75% {
+        transform: translateX(3px);
+      }
+    }
+
+    /* TOUCH-FRIENDLY FULL-OVERLAY INPUT */
+    .hidden-input {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: text;
+      z-index: 2;
+      font-size: 16px;
+      /* Prevents auto-zoom on iOS Safari */
+      -webkit-tap-highlight-color: transparent;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: transparent;
+    }
+
+    /* UNFOCUS PROMPT OVERLAY */
+    .focus-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(13, 13, 20, 0.78);
+      backdrop-filter: blur(4px);
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      z-index: 3;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .focus-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .focus-overlay p {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    /* ARENA CONTROLS */
+    .arena-bottom-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .hint-text {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hint-text kbd {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 2px 6px;
+      font-size: 0.74rem;
+      font-family: var(--font-mono);
+      color: var(--text);
+    }
+
+    .bottom-btn-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-action {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-action:hover {
+      background: var(--surface3);
+      border-color: var(--border-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-action.primary {
+      background: linear-gradient(135deg, rgba(247, 201, 72, 0.2) 0%, rgba(247, 201, 72, 0.1) 100%);
+      color: var(--accent);
+      border-color: rgba(247, 201, 72, 0.4);
+    }
+
+    .btn-action.primary:hover {
+      background: rgba(247, 201, 72, 0.25);
+      box-shadow: 0 0 14px var(--accent-glow);
+    }
+
+    /* RESULT BANNER */
+    .result-banner {
+      display: none;
+      background: linear-gradient(135deg, rgba(110, 231, 183, 0.12) 0%, rgba(247, 201, 72, 0.12) 100%);
+      border: 1.5px solid rgba(110, 231, 183, 0.4);
+      border-radius: 14px;
+      padding: 20px 24px;
+      animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .result-banner.show {
+      display: block;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .result-header h3 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--accent3);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pb-badge-spark {
+      background: linear-gradient(135deg, #f7c948, #ff6b9d);
+      color: #0b0c13;
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.05em;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .result-stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .res-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .res-card .label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .res-card .val {
+      font-family: var(--font-mono);
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-top: 2px;
+    }
+
+    .res-card.highlight .val {
+      color: var(--accent);
+    }
+
+    .result-footer {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* ATTEMPTS HISTORY SECTION */
+    .history-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 22px;
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .history-header h4 {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .history-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+    }
+
+    .history-table {
+      width: 100%;
+      min-width: 500px;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+
+    .history-table th {
+      text-align: left;
+      padding: 8px 10px;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.72rem;
+    }
+
+    .history-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      font-family: var(--font-mono);
+    }
+
+    .history-table tr.best-row td {
+      color: var(--accent);
+      font-weight: 700;
+      background: rgba(247, 201, 72, 0.04);
+    }
+
+    /* MODALS */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 9, 14, 0.8);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 16px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 680px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+      overflow: hidden;
+      animation: zoomIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes zoomIn {
+      from {
+        opacity: 0;
+        transform: scale(0.96);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.3rem;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 6px;
+      transition: color 0.2s;
+    }
+
+    .modal-close:hover {
+      color: var(--text);
+    }
+
+    .modal-body {
+      padding: 18px 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .modal-search-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .modal-search-wrap svg {
+      position: absolute;
+      left: 12px;
+      color: var(--text-dim);
+      pointer-events: none;
+    }
+
+    .modal-search-input {
+      width: 100%;
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px 10px 38px;
+      color: var(--text);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .modal-search-input:focus {
+      border-color: var(--accent);
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .filter-tab {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .filter-tab.active {
+      background: rgba(247, 201, 72, 0.15);
+      color: var(--accent);
+      border-color: rgba(247, 201, 72, 0.35);
+    }
+
+    .words-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 8px;
+      max-height: 380px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .word-pick-item {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+
+    .word-pick-item:hover {
+      background: var(--surface3);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+
+    .word-pick-item .word-name {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+      word-break: break-all;
+      padding-right: 8px;
+    }
+
+    .word-pick-item .word-len {
+      font-size: 0.72rem;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--accent);
+      padding: 2px 7px;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    .modal-footer {
+      padding: 14px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    /* TOAST */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 20px;
+      font-size: 0.83rem;
+      color: var(--text);
+      opacity: 0;
+      transition: opacity 0.25s, transform 0.25s;
+      z-index: 9998;
+      white-space: nowrap;
+      pointer-events: none;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    #toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* RESPONSIVE DESIGN FOR TABLETS & PHONES */
+    @media (max-width: 768px) {
+      body {
+        padding: 12px 10px 32px;
+      }
+
+      header {
+        margin-bottom: 12px;
+        gap: 8px;
+      }
+
+      .logo-group h1 {
+        font-size: 1.25rem;
+      }
+
+      .logo-badge {
+        font-size: 0.68rem;
+        padding: 2px 7px;
+      }
+
+      .header-actions {
+        gap: 5px;
+      }
+
+      .header-nav-btn {
+        padding: 5px 8px;
+        font-size: 0.75rem;
+      }
+
+      main {
+        gap: 12px;
+      }
+
+      .presets-card {
+        padding: 12px 14px;
+      }
+
+      .presets-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+      }
+
+      .presets-title {
+        font-size: 0.76rem;
+      }
+
+      .presets-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+        width: 100%;
+      }
+
+      .presets-actions #btn-open-catalog {
+        grid-column: span 2;
+        justify-content: center;
+      }
+
+      .presets-actions .action-pill-btn {
+        justify-content: center;
+        padding: 8px 10px;
+        font-size: 0.78rem;
+        min-height: 38px;
+      }
+
+      .target-word-card {
+        padding: 14px 14px;
+        gap: 10px;
+      }
+
+      .target-word-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .target-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        width: 100%;
+      }
+
+      .meta-tag {
+        font-size: 0.72rem;
+        padding: 3px 8px;
+      }
+
+      .target-word-actions {
+        display: flex;
+        justify-content: flex-end;
+        width: 100%;
+        gap: 6px;
+      }
+
+      .icon-btn-small {
+        padding: 5px 10px;
+        font-size: 0.75rem;
+        min-height: 32px;
+      }
+
+      .target-word-display {
+        font-size: clamp(1.05rem, 4vw, 1.3rem);
+        line-height: 1.45;
+        letter-spacing: 0.02em;
+        padding: 10px 12px;
+        background: rgba(0, 0, 0, 0.25);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.04);
+      }
+
+      .typing-arena-card {
+        padding: 14px 14px;
+        gap: 14px;
+      }
+
+      /* LIVE STATS: Banner Timer + 4 balanced cards */
+      .stats-panel {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+        padding: 8px 10px;
+      }
+
+      .stat-box.timer {
+        grid-column: 1 / -1;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 14px;
+        background: rgba(247, 201, 72, 0.08);
+        border: 1px solid rgba(247, 201, 72, 0.25);
+        border-radius: 10px;
+      }
+
+      .stat-box.timer .stat-label {
+        font-size: 0.78rem;
+        color: var(--accent);
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .stat-box.timer .stat-label::before {
+        content: "⏱️";
+        font-size: 0.95rem;
+      }
+
+      .stat-box.timer .stat-value {
+        font-size: 1.6rem;
+        font-weight: 800;
+      }
+
+      .stat-box:not(.timer) {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        border-radius: 8px;
+        padding: 6px 2px;
+      }
+
+      .stat-box:not(.timer) .stat-label {
+        font-size: 0.62rem;
+        white-space: nowrap;
+      }
+
+      .stat-box:not(.timer) .stat-value {
+        font-size: 1.12rem;
+      }
+
+      .word-typing-box {
+        min-height: 90px;
+        padding: 14px 10px;
+        font-size: clamp(1.1rem, 4.2vw, 1.35rem);
+        line-height: 1.5;
+        gap: 3px 1.5px;
+      }
+
+      .focus-overlay p {
+        font-size: 0.85rem;
+      }
+
+      .arena-bottom-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+      }
+
+      .hint-text {
+        display: none;
+      }
+
+      .bottom-btn-group {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        width: 100%;
+      }
+
+      .bottom-btn-group .btn-action {
+        justify-content: center;
+        padding: 11px 12px;
+        font-size: 0.84rem;
+        min-height: 44px;
+      }
+
+      /* RESULT BANNER */
+      .result-banner {
+        padding: 14px 14px;
+      }
+
+      .result-header h3 {
+        font-size: 1.05rem;
+      }
+
+      .result-stats-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+      }
+
+      .result-stats-row .res-card.highlight {
+        grid-column: span 2;
+        background: rgba(247, 201, 72, 0.08);
+        border-color: rgba(247, 201, 72, 0.3);
+      }
+
+      .result-stats-row .res-card.highlight .val {
+        font-size: 1.5rem;
+      }
+
+      .result-footer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+      }
+
+      .result-footer span {
+        display: none;
+      }
+
+      .result-footer .btn-action {
+        width: 100%;
+        justify-content: center;
+        padding: 11px 14px;
+        min-height: 44px;
+      }
+
+      /* MODALS ON MOBILE */
+      .modal-overlay {
+        padding: 8px;
+      }
+
+      .modal-box {
+        max-height: 92vh;
+        border-radius: 14px;
+        width: 100%;
+      }
+
+      .modal-header {
+        padding: 12px 14px;
+      }
+
+      .modal-header h2 {
+        font-size: 0.95rem;
+      }
+
+      .modal-body {
+        padding: 12px 12px;
+        gap: 10px;
+      }
+
+      .filter-tabs {
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 2px;
+      }
+
+      .filter-tabs::-webkit-scrollbar {
+        display: none;
+      }
+
+      .filter-tab {
+        padding: 6px 10px;
+        font-size: 0.74rem;
+      }
+
+      .words-grid {
+        grid-template-columns: 1fr;
+        max-height: 46vh;
+        gap: 6px;
+      }
+
+      .word-pick-item {
+        padding: 9px 11px;
+      }
+
+      .modal-footer {
+        padding: 10px 14px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .logo-group h1 {
+        font-size: 1.1rem;
+      }
+
+      .stats-panel {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .stat-box.timer {
+        grid-column: span 2;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo-group">
+      <h1>Long Text</h1>
+      <span class="logo-badge">Speed Drill Kata Panjang</span>
+    </div>
+    <div class="header-actions">
+      <button class="header-nav-btn" id="btn-header-random" title="Pilih Kata Acak Baru">
+        <span>🎲 Acak Kata</span>
+      </button>
+      <button class="header-nav-btn" id="btn-reset-all-pb" title="Reset Semua Rekor Pribadi">
+        <span>👑 Reset PB</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- PRESET & SELECTOR BAR -->
+    <section class="presets-card">
+      <div class="presets-header">
+        <span class="presets-title">
+          <span>🔥 Preset Kata Monster:</span>
+        </span>
+        <div class="presets-actions">
+          <button class="action-pill-btn primary" id="btn-open-catalog">
+            🔍 Pilih dari 3.684+ Kata KBBI
+          </button>
+          <button class="action-pill-btn" id="btn-random-word">
+            🎲 Kata Acak
+          </button>
+          <button class="action-pill-btn" id="btn-custom-word">
+            ✍️ Set Kata Sendiri
+          </button>
+        </div>
+      </div>
+
+      <div class="presets-chips" id="presets-chips-container">
+        <!-- Quick Preset Chips injected here -->
+      </div>
+    </section>
+
+    <!-- ACTIVE TARGET WORD BANNER -->
+    <section class="target-word-card">
+      <div class="target-word-meta">
+        <div class="target-badges">
+          <span class="meta-tag length" id="target-len-badge">85 Huruf</span>
+          <span class="meta-tag difficulty" id="target-diff-badge">Ekstrem 🔥</span>
+          <span class="meta-tag pb" id="target-pb-badge">👑 Rekor: Belum ada</span>
+        </div>
+        <div class="target-word-actions">
+          <button class="icon-btn-small" id="btn-copy-word" title="Salin kata ini">
+            📋 Salin Kata
+          </button>
+          <button class="icon-btn-small" id="btn-audio-toggle" title="Toggle efek suara ketik">
+            🔊 Suara: <span id="audio-status-text">Aktif</span>
+          </button>
+        </div>
+      </div>
+      <div class="target-word-display" id="target-word-text">
+        taumatawhakatangihangakoauauotamateaturipukakapikimaungahoronukupokaiwhenuakitanatahu
+      </div>
+    </section>
+
+    <!-- TYPING ARENA -->
+    <section class="typing-arena-card">
+      <!-- LIVE STATS -->
+      <div class="stats-panel">
+        <div class="stat-box timer">
+          <span class="stat-label">Stopwatch</span>
+          <span class="stat-value" id="live-timer">0.00s</span>
+        </div>
+        <div class="stat-box cps">
+          <span class="stat-label">Kecepatan (CPS)</span>
+          <span class="stat-value" id="live-cps">0.0</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Perkiraan WPM</span>
+          <span class="stat-value" id="live-wpm">0</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Progress</span>
+          <span class="stat-value" id="live-progress">0/85</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Akurasi</span>
+          <span class="stat-value" id="live-acc">100%</span>
+        </div>
+      </div>
+
+      <!-- PROGRESS BAR -->
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="progress-bar-fill"></div>
+      </div>
+
+      <!-- INTERACTIVE LETTER VISUALIZER -->
+      <div class="word-typing-box" id="typing-box-container">
+        <!-- Letters will be dynamically generated here -->
+        <input type="text" class="hidden-input" id="typing-input-field" autocomplete="off" autocorrect="off"
+          autocapitalize="none" spellcheck="false" inputmode="text" enterkeyhint="done" />
+        <div class="focus-overlay active" id="focus-overlay">
+          <svg width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+            style="color: var(--accent);">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122">
+            </path>
+          </svg>
+          <p>Ketuk di sini atau tekan tombol untuk mulai mengetik ⌨️</p>
+        </div>
+      </div>
+
+      <!-- RESULT BANNER -->
+      <div class="result-banner" id="result-banner">
+        <div class="result-header">
+          <h3>
+            <span>🎯 Latihan Selesai!</span>
+            <span id="res-pb-sparkle" class="pb-badge-spark" style="display: none;">🔥 Rekor Baru!</span>
+          </h3>
+          <span style="font-size: 0.8rem; color: var(--text-dim);" id="res-timestamp">Baru saja</span>
+        </div>
+        <div class="result-stats-row">
+          <div class="res-card highlight">
+            <div class="label">Waktu Tempuh</div>
+            <div class="val" id="res-total-time">0.00s</div>
+          </div>
+          <div class="res-card">
+            <div class="label">Kecepatan (CPS)</div>
+            <div class="val" id="res-cps">0.0 /s</div>
+          </div>
+          <div class="res-card">
+            <div class="label">Kecepatan (WPM)</div>
+            <div class="val" id="res-wpm">0 WPM</div>
+          </div>
+          <div class="res-card">
+            <div class="label">Akurasi</div>
+            <div class="val" id="res-acc">100%</div>
+          </div>
+          <div class="res-card">
+            <div class="label">Kesalahan (Typo)</div>
+            <div class="val" id="res-typo">0</div>
+          </div>
+        </div>
+        <div class="result-footer">
+          <span style="font-size: 0.8rem; color: var(--text-muted); margin-right: auto;">
+            Tekan <kbd>Tab</kbd> atau <kbd>Enter</kbd> untuk langsung mengulang!
+          </span>
+          <button class="btn-action primary" id="btn-result-retry">
+            🔄 Ulangi Kata Ini
+          </button>
+          <button class="btn-action" id="btn-result-random">
+            🎲 Ganti Kata Acak
+          </button>
+        </div>
+      </div>
+
+      <!-- BOTTOM ACTIONS & HINTS -->
+      <div class="arena-bottom-controls">
+        <div class="hint-text">
+          <span>💡 Shortcut:</span>
+          <kbd>Tab</kbd> atau <kbd>Enter</kbd> = Ulangi |
+          <kbd>Esc</kbd> = Pilih Kata
+        </div>
+        <div class="bottom-btn-group">
+          <button class="btn-action primary" id="btn-arena-restart">
+            🔄 Ulangi Latihan
+          </button>
+          <button class="btn-action" id="btn-arena-random">
+            🎲 Kata Lainnya
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SESSION ATTEMPTS HISTORY -->
+    <section class="history-card" id="history-section" style="display: none;">
+      <div class="history-header">
+        <h4>📊 Riwayat Percobaan Sesi Ini:</h4>
+        <button class="icon-btn-small" id="btn-clear-history">Bersihkan</button>
+      </div>
+      <div class="history-table-wrap">
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Waktu</th>
+              <th>CPS</th>
+              <th>WPM</th>
+              <th>Akurasi</th>
+              <th>Typo</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="history-tbody">
+            <!-- Attempt rows injected here -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- MODAL PILIH KATA (>15 HURUF) -->
+  <div id="catalog-modal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2>🔍 Pilih Kata Panjang (>15 Huruf)</h2>
+        <button class="modal-close" id="btn-catalog-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-search-wrap">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+          <input type="text" id="catalog-search-input" class="modal-search-input"
+            placeholder="Cari kata panjang (misal: mempertanggung, pneumo, dll)..." />
+        </div>
+
+        <div class="filter-tabs">
+          <button class="filter-tab active" data-filter="all">Semua (>15)</button>
+          <button class="filter-tab" data-filter="extreme">Ekstrem (>50)</button>
+          <button class="filter-tab" data-filter="super">Super (30-50)</button>
+          <button class="filter-tab" data-filter="medium">Sedang (20-30)</button>
+          <button class="filter-tab" data-filter="standard">Standar (16-20)</button>
+        </div>
+
+        <div
+          style="display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; color: var(--text-dim);">
+          <span id="catalog-count-text">Memuat daftar kata...</span>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span>Urut:</span>
+            <select id="catalog-sort"
+              style="background: var(--surface2); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 2px 6px; font-size: 0.76rem; outline: none;">
+              <option value="len_desc">Terpanjang Dulu</option>
+              <option value="len_asc">Terpendek Dulu</option>
+              <option value="alpha">Abjad (A-Z)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="words-grid" id="catalog-words-grid">
+          <div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px 0;">
+            Memuat data kata...
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL CUSTOM WORD -->
+  <div id="custom-modal" class="modal-overlay">
+    <div class="modal-box" style="max-width: 520px;">
+      <div class="modal-header">
+        <h2>✍️ Masukkan Kata / Teks Sendiri</h2>
+        <button class="modal-close" id="btn-custom-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.85rem; color: var(--text-dim);">
+          Masukkan kata atau kalimat panjang yang ingin Anda latih untuk membangun muscle memory:
+        </p>
+        <textarea id="custom-word-input" rows="4"
+          style="width: 100%; background: var(--surface2); border: 1.5px solid var(--border); border-radius: 10px; padding: 12px; color: var(--text); font-family: var(--font-mono); font-size: 0.95rem; outline: none; resize: vertical;"
+          placeholder="Ketik atau tempel kata panjang di sini..."></textarea>
+        <div style="display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-dim);">
+          <span id="custom-char-count">0 karakter</span>
+          <span style="color: var(--accent);">Bisa berupa kata atau kalimat</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-action" id="btn-custom-cancel">Batal</button>
+        <button class="btn-action primary" id="btn-custom-apply">Terapkan & Latihan</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+    // PRESET POPULER KATA MONSTER
+    const PRESET_WORDS = [
+      {
+        word: "taumatawhakatangihangakoauauotamateaturipukakapikimaungahoronukupokaiwhenuakitanatahu",
+        label: "Taumatawhakatangihanga...",
+        length: 85,
+        desc: "Bukit di Selandia Baru (Nama tempat terpanjang di dunia)"
+      },
+      {
+        word: "muvaffakiyetsizlestiricilestiriveremeyebileceklerimizdenmissinizcesine",
+        label: "Muvaffakiyetsizlestirici...",
+        length: 70,
+        desc: "Kata terpanjang bahasa Turki"
+      },
+      {
+        word: "rindfleischetikettierungsueberwachungsaufgabenuebertragungsgesetz",
+        label: "Rindfleischetikettierungs...",
+        length: 65,
+        desc: "Hukum pelabelan daging sapi Jerman"
+      },
+      {
+        word: "llanfairpwyllgwyngyllgogerychwyrndrobwllllantysiliogogogoch",
+        label: "Llanfairpwyllgwyngyll...",
+        length: 59,
+        desc: "Desa di Wales, Inggris"
+      },
+      {
+        word: "pneumonoultramicroscopicsilicovolcanoconiosis",
+        label: "Pneumonoultramicroscopic...",
+        length: 45,
+        desc: "Penyakit paru akibat debu silika"
+      },
+      {
+        word: "hippopotomonstrosesquippedaliophobia",
+        label: "Hippopotomonstrosesquippedalio...",
+        length: 36,
+        desc: "Fobia terhadap kata-kata panjang"
+      },
+      {
+        word: "supercalifragilisticexpialidocious",
+        label: "Supercalifragilistic...",
+        length: 34,
+        desc: "Kata musikal Mary Poppins"
+      },
+      {
+        word: "ketidakbertanggungjawaban",
+        label: "Ketidakbertanggungjawaban",
+        length: 25,
+        desc: "Kata turunan resmi KBBI"
+      },
+      {
+        word: "mempertanggungjawabkan",
+        label: "Mempertanggungjawabkan",
+        length: 22,
+        desc: "Kata kerja baku KBBI"
+      },
+      {
+        word: "ketidakberkesinambungan",
+        label: "Ketidakberkesinambungan",
+        length: 23,
+        desc: "Kata turunan baku KBBI"
+      }
+    ];
+
+    // STATE
+    let targetWord = "taumatawhakatangihangakoauauotamateaturipukakapikimaungahoronukupokaiwhenuakitanatahu";
+    let typedInput = "";
+    let isTyping = false;
+    let isFinished = false;
+    let startTime = 0;
+    let timerInterval = null;
+    let elapsedSeconds = 0;
+    let typoCount = 0;
+    let totalKeysPressed = 0;
+    let currentSessionAttempts = [];
+    let soundEnabled = true;
+
+    // Personal Best Storage: { [word]: { time: number, cps: number, wpm: number, acc: number, date: string } }
+    const PB_STORAGE_KEY = "sambung_kata_long_words_pb";
+
+    // DOM ELEMENTS
+    const targetWordText = document.getElementById("target-word-text");
+    const targetLenBadge = document.getElementById("target-len-badge");
+    const targetDiffBadge = document.getElementById("target-diff-badge");
+    const targetPbBadge = document.getElementById("target-pb-badge");
+    const presetsContainer = document.getElementById("presets-chips-container");
+
+    const liveTimer = document.getElementById("live-timer");
+    const liveCps = document.getElementById("live-cps");
+    const liveWpm = document.getElementById("live-wpm");
+    const liveProgress = document.getElementById("live-progress");
+    const liveAcc = document.getElementById("live-acc");
+    const progressBarFill = document.getElementById("progress-bar-fill");
+
+    const typingBoxContainer = document.getElementById("typing-box-container");
+    const typingInputField = document.getElementById("typing-input-field");
+    const focusOverlay = document.getElementById("focus-overlay");
+
+    const resultBanner = document.getElementById("result-banner");
+    const resTotalTime = document.getElementById("res-total-time");
+    const resCps = document.getElementById("res-cps");
+    const resWpm = document.getElementById("res-wpm");
+    const resAcc = document.getElementById("res-acc");
+    const resTypo = document.getElementById("res-typo");
+    const resPbSparkle = document.getElementById("res-pb-sparkle");
+    const resTimestamp = document.getElementById("res-timestamp");
+
+    const btnResultRetry = document.getElementById("btn-result-retry");
+    const btnResultRandom = document.getElementById("btn-result-random");
+    const btnArenaRestart = document.getElementById("btn-arena-restart");
+    const btnArenaRandom = document.getElementById("btn-arena-random");
+
+    const historySection = document.getElementById("history-section");
+    const historyTbody = document.getElementById("history-tbody");
+    const btnClearHistory = document.getElementById("btn-clear-history");
+
+    const btnOpenCatalog = document.getElementById("btn-open-catalog");
+    const btnRandomWord = document.getElementById("btn-random-word");
+    const btnCustomWord = document.getElementById("btn-custom-word");
+    const btnCopyWord = document.getElementById("btn-copy-word");
+    const btnAudioToggle = document.getElementById("btn-audio-toggle");
+    const audioStatusText = document.getElementById("audio-status-text");
+
+    // Modals
+    const catalogModal = document.getElementById("catalog-modal");
+    const btnCatalogClose = document.getElementById("btn-catalog-close");
+    const catalogSearchInput = document.getElementById("catalog-search-input");
+    const catalogSort = document.getElementById("catalog-sort");
+    const catalogWordsGrid = document.getElementById("catalog-words-grid");
+    const catalogCountText = document.getElementById("catalog-count-text");
+
+    const customModal = document.getElementById("custom-modal");
+    const btnCustomClose = document.getElementById("btn-custom-close");
+    const btnCustomCancel = document.getElementById("btn-custom-cancel");
+    const btnCustomApply = document.getElementById("btn-custom-apply");
+    const customWordInput = document.getElementById("custom-word-input");
+    const customCharCount = document.getElementById("custom-char-count");
+
+    // AUDIO SYNTHESIZER FOR MECHANICAL KEYBOARD CLICK
+    let audioCtx = null;
+    function playTypingClick(isError = false) {
+      if (!soundEnabled) return;
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === "suspended") {
+          audioCtx.resume();
+        }
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        if (isError) {
+          osc.type = "sawtooth";
+          osc.frequency.setValueAtTime(160, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(70, audioCtx.currentTime + 0.08);
+          gain.gain.setValueAtTime(0.14, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.08);
+        } else {
+          // Crisp mechanical thock
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(450, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 0.04);
+          gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.04);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.04);
+        }
+      } catch (e) {
+        // Audio not allowed or failed
+      }
+    }
+
+    // INITIALIZATION
+    document.addEventListener("DOMContentLoaded", () => {
+      initPresets();
+      setTargetWord(targetWord);
+      setupEventListeners();
+      loadAudioSetting();
+    });
+
+    function loadAudioSetting() {
+      const saved = localStorage.getItem("sambung_kata_typing_sound");
+      if (saved !== null) {
+        soundEnabled = saved === "1";
+      }
+      updateAudioButtonUI();
+    }
+
+    function updateAudioButtonUI() {
+      audioStatusText.textContent = soundEnabled ? "Aktif" : "Mati";
+      btnAudioToggle.style.color = soundEnabled ? "var(--accent)" : "var(--text-muted)";
+    }
+
+    function initPresets() {
+      presetsContainer.innerHTML = "";
+      PRESET_WORDS.forEach((item) => {
+        const chip = document.createElement("button");
+        chip.className = `preset-chip ${item.word === targetWord ? "active" : ""}`;
+        chip.innerHTML = `
+            <span>${item.label}</span>
+            <span class="len-badge">${item.length}</span>
+          `;
+        chip.title = `${item.word} (${item.length} huruf) - ${item.desc}`;
+        chip.addEventListener("click", () => {
+          setTargetWord(item.word);
+        });
+        presetsContainer.appendChild(chip);
+      });
+    }
+
+    // SET TARGET WORD
+    function setTargetWord(newWord) {
+      targetWord = newWord.trim().toLowerCase();
+      targetWordText.textContent = targetWord;
+
+      const len = targetWord.length;
+      targetLenBadge.textContent = `${len} Huruf`;
+
+      // Difficulty level
+      if (len >= 50) {
+        targetDiffBadge.textContent = "Ekstrem 🔥";
+        targetDiffBadge.style.color = "#ff5252";
+        targetDiffBadge.style.borderColor = "rgba(255,82,82,0.4)";
+      } else if (len >= 30) {
+        targetDiffBadge.textContent = "Sangat Panjang ⚡";
+        targetDiffBadge.style.color = "var(--accent)";
+        targetDiffBadge.style.borderColor = "rgba(247,201,72,0.4)";
+      } else {
+        targetDiffBadge.textContent = "Panjang 🎯";
+        targetDiffBadge.style.color = "var(--accent3)";
+        targetDiffBadge.style.borderColor = "rgba(110,231,183,0.4)";
+      }
+
+      // Update PB Badge
+      updatePbDisplay();
+
+      // Highlight preset chip if matched
+      document.querySelectorAll(".preset-chip").forEach((chip, idx) => {
+        if (PRESET_WORDS[idx] && PRESET_WORDS[idx].word === targetWord) {
+          chip.classList.add("active");
+        } else {
+          chip.classList.remove("active");
+        }
+      });
+
+      // Reset game state
+      resetGame();
+    }
+
+    function getPersonalBests() {
+      try {
+        return JSON.parse(localStorage.getItem(PB_STORAGE_KEY)) || {};
+      } catch {
+        return {};
+      }
+    }
+
+    function updatePbDisplay() {
+      const pbs = getPersonalBests();
+      const pb = pbs[targetWord];
+      if (pb && pb.time) {
+        targetPbBadge.textContent = `👑 Rekor: ${pb.time.toFixed(2)}s (${pb.cps.toFixed(1)} cps)`;
+        targetPbBadge.style.background = "rgba(247, 201, 72, 0.15)";
+        targetPbBadge.style.borderColor = "rgba(247, 201, 72, 0.4)";
+      } else {
+        targetPbBadge.textContent = "👑 Rekor: Belum ada";
+        targetPbBadge.style.background = "rgba(255, 255, 255, 0.05)";
+        targetPbBadge.style.borderColor = "var(--border)";
+      }
+    }
+
+    // RESET / PREPARE GAME
+    function resetGame() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      isTyping = false;
+      isFinished = false;
+      startTime = 0;
+      elapsedSeconds = 0;
+      typoCount = 0;
+      totalKeysPressed = 0;
+      typedInput = "";
+
+      // Reset live stats
+      liveTimer.textContent = "0.00s";
+      liveCps.textContent = "0.0";
+      liveWpm.textContent = "0";
+      liveProgress.textContent = `0/${targetWord.length}`;
+      liveAcc.textContent = "100%";
+      progressBarFill.style.width = "0%";
+
+      typingBoxContainer.classList.remove("success");
+      resultBanner.classList.remove("show");
+
+      renderLetterVisualizer();
+
+      typingInputField.value = "";
+      focusTyping();
+    }
+
+    function focusTyping() {
+      typingInputField.focus();
+      focusOverlay.classList.remove("active");
+      typingBoxContainer.classList.add("focused");
+    }
+
+    // RENDER LETTER SPANS
+    function renderLetterVisualizer() {
+      // Save focus overlay and input element
+      const overlay = focusOverlay;
+      const inputField = typingInputField;
+
+      typingBoxContainer.innerHTML = "";
+      typingBoxContainer.appendChild(overlay);
+      typingBoxContainer.appendChild(inputField);
+
+      for (let i = 0; i < targetWord.length; i++) {
+        const span = document.createElement("span");
+        span.className = "letter-char";
+        span.dataset.index = i;
+        span.textContent = targetWord[i];
+
+        if (i < typedInput.length) {
+          if (typedInput[i] === targetWord[i]) {
+            span.classList.add("correct");
+          } else {
+            span.classList.add("incorrect");
+          }
+        } else if (i === typedInput.length) {
+          span.classList.add("current");
+        }
+
+        typingBoxContainer.appendChild(span);
+      }
+    }
+
+    // EVENT LISTENERS SETUP
+    function setupEventListeners() {
+      // Click typing box to focus
+      typingBoxContainer.addEventListener("click", () => {
+        focusTyping();
+      });
+
+      typingInputField.addEventListener("blur", () => {
+        if (!isFinished) {
+          focusOverlay.classList.add("active");
+          typingBoxContainer.classList.remove("focused");
+        }
+      });
+
+      typingInputField.addEventListener("focus", () => {
+        focusOverlay.classList.remove("active");
+        typingBoxContainer.classList.add("focused");
+      });
+
+      // Capturing input
+      typingInputField.addEventListener("input", handleInput);
+      typingInputField.addEventListener("keydown", handleKeyDown);
+
+      // Global key shortcut
+      document.addEventListener("keydown", (e) => {
+        // If modal open, ignore
+        if (catalogModal.classList.contains("active") || customModal.classList.contains("active")) {
+          if (e.key === "Escape") {
+            closeModals();
+          }
+          return;
+        }
+
+        if (e.key === "Escape") {
+          openCatalogModal();
+          return;
+        }
+
+        if (e.key === "Tab" || (isFinished && e.key === "Enter")) {
+          e.preventDefault();
+          resetGame();
+          return;
+        }
+
+        // Auto focus typing area when typing standard letters
+        if (!isTyping && !isFinished && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+          focusTyping();
+        }
+      });
+
+      // Action Buttons
+      btnArenaRestart.addEventListener("click", resetGame);
+      btnResultRetry.addEventListener("click", resetGame);
+      btnArenaRandom.addEventListener("click", pickRandomWordFromCatalog);
+      btnResultRandom.addEventListener("click", pickRandomWordFromCatalog);
+      btnRandomWord.addEventListener("click", pickRandomWordFromCatalog);
+
+      btnCopyWord.addEventListener("click", () => {
+        navigator.clipboard.writeText(targetWord);
+        showToast("📋 Kata disalin ke clipboard!");
+      });
+
+      btnAudioToggle.addEventListener("click", () => {
+        soundEnabled = !soundEnabled;
+        localStorage.setItem("sambung_kata_typing_sound", soundEnabled ? "1" : "0");
+        updateAudioButtonUI();
+        showToast(soundEnabled ? "🔊 Suara ketik diaktifkan" : "🔇 Suara ketik dimatikan");
+      });
+
+      btnClearHistory.addEventListener("click", () => {
+        currentSessionAttempts = [];
+        renderHistoryTable();
+        showToast("Riwayat percobaan dibersihkan.");
+      });
+
+      // Catalog modal triggers
+      btnOpenCatalog.addEventListener("click", openCatalogModal);
+      btnCatalogClose.addEventListener("click", closeModals);
+      catalogModal.addEventListener("click", (e) => {
+        if (e.target === catalogModal) closeModals();
+      });
+
+      catalogSearchInput.addEventListener("input", debounce(fetchCatalogWords, 250));
+      catalogSort.addEventListener("change", fetchCatalogWords);
+
+      document.querySelectorAll(".filter-tab").forEach(tab => {
+        tab.addEventListener("click", (e) => {
+          document.querySelectorAll(".filter-tab").forEach(t => t.classList.remove("active"));
+          e.target.classList.add("active");
+          fetchCatalogWords();
+        });
+      });
+
+      // Custom word modal triggers
+      btnCustomWord.addEventListener("click", openCustomModal);
+      btnCustomClose.addEventListener("click", closeModals);
+      btnCustomCancel.addEventListener("click", closeModals);
+      customModal.addEventListener("click", (e) => {
+        if (e.target === customModal) closeModals();
+      });
+
+      customWordInput.addEventListener("input", () => {
+        const val = customWordInput.value.trim().toLowerCase();
+        customCharCount.textContent = `${val.length} karakter`;
+      });
+
+      btnCustomApply.addEventListener("click", () => {
+        const val = customWordInput.value.trim().toLowerCase().replace(/\s+/g, "");
+        if (!val) {
+          showToast("Harap masukkan kata!");
+          return;
+        }
+        if (val.length < 10) {
+          showToast("Kata terlalu pendek, minimal 10 huruf.");
+          return;
+        }
+        setTargetWord(val);
+        closeModals();
+        showToast(`✅ Kata custom (${val.length} huruf) siap dilatih!`);
+      });
+
+      // Header buttons
+      const btnHeaderRandom = document.getElementById("btn-header-random");
+      if (btnHeaderRandom) {
+        btnHeaderRandom.addEventListener("click", pickRandomWordFromCatalog);
+      }
+
+      const btnResetAllPb = document.getElementById("btn-reset-all-pb");
+      if (btnResetAllPb) {
+        btnResetAllPb.addEventListener("click", () => {
+          if (confirm("Apakah Anda yakin ingin menghapus seluruh catatan Rekor Pribadi (Personal Best) di browser ini?")) {
+            localStorage.removeItem(PB_STORAGE_KEY);
+            updatePbDisplay();
+            showToast("🧹 Seluruh Rekor Pribadi telah dibersihkan.");
+          }
+        });
+      }
+    }
+
+    function handleKeyDown(e) {
+      if (isFinished) return;
+
+      // Count backspace or keys
+      if (e.key === "Backspace") {
+        // Allow backspace
+        return;
+      }
+    }
+
+    // HANDLE USER INPUT
+    function handleInput(e) {
+      if (isFinished) return;
+
+      const val = typingInputField.value.toLowerCase();
+
+      // Mulai stopwatch saat pertama kali mengetik karakter pertama!
+      if (!isTyping && val.length > 0) {
+        startStopwatch();
+      }
+
+      totalKeysPressed++;
+      typedInput = val;
+
+      // Check current letter
+      const currentIndex = typedInput.length - 1;
+      if (currentIndex >= 0 && currentIndex < targetWord.length) {
+        const isCorrect = typedInput[currentIndex] === targetWord[currentIndex];
+        if (!isCorrect) {
+          typoCount++;
+          playTypingClick(true);
+        } else {
+          playTypingClick(false);
+        }
+      }
+
+      updateLetterHighlights();
+      updateLiveStats();
+
+      // Selesai jika kata sudah lengkap dan benar persis!
+      if (typedInput === targetWord) {
+        finishTyping();
+      }
+    }
+
+    // START PRECISION STOPWATCH
+    function startStopwatch() {
+      isTyping = true;
+      startTime = performance.now();
+
+      timerInterval = setInterval(() => {
+        const now = performance.now();
+        elapsedSeconds = (now - startTime) / 1000;
+        liveTimer.textContent = `${elapsedSeconds.toFixed(2)}s`;
+        updateLiveStats();
+      }, 20);
+    }
+
+    // UPDATE LETTER HIGHLIGHTS & CARET
+    function updateLetterHighlights() {
+      const letters = typingBoxContainer.querySelectorAll(".letter-char");
+
+      letters.forEach((span, idx) => {
+        span.className = "letter-char";
+        if (idx < typedInput.length) {
+          if (typedInput[idx] === targetWord[idx]) {
+            span.classList.add("correct");
+          } else {
+            span.classList.add("incorrect");
+          }
+        } else if (idx === typedInput.length) {
+          span.classList.add("current");
+        }
+      });
+    }
+
+    // UPDATE LIVE STATS
+    function updateLiveStats() {
+      const progressCount = typedInput.length;
+      const totalCount = targetWord.length;
+      liveProgress.textContent = `${progressCount}/${totalCount}`;
+
+      const pct = Math.min(100, Math.round((progressCount / totalCount) * 100));
+      progressBarFill.style.width = `${pct}%`;
+
+      if (elapsedSeconds > 0) {
+        // CPS = Karakter per detik
+        const cps = (progressCount / elapsedSeconds).toFixed(1);
+        liveCps.textContent = cps;
+
+        // WPM = (Karakter / 5) / menit
+        const minutes = elapsedSeconds / 60;
+        const wpm = Math.round((progressCount / 5) / minutes);
+        liveWpm.textContent = wpm;
+      }
+
+      // Akurasi
+      if (totalKeysPressed > 0) {
+        const correctCount = Math.max(0, totalKeysPressed - typoCount);
+        const acc = Math.round((correctCount / totalKeysPressed) * 100);
+        liveAcc.textContent = `${acc}%`;
+      }
+    }
+
+    // FINISH TYPING GAME
+    function finishTyping() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      isTyping = false;
+      isFinished = true;
+
+      const totalTime = ((performance.now() - startTime) / 1000).toFixed(2);
+      elapsedSeconds = parseFloat(totalTime);
+      liveTimer.textContent = `${totalTime}s`;
+
+      typingBoxContainer.classList.add("success");
+
+      const cps = (targetWord.length / elapsedSeconds).toFixed(2);
+      const wpm = Math.round((targetWord.length / 5) / (elapsedSeconds / 60));
+      const correctCount = Math.max(0, totalKeysPressed - typoCount);
+      const accuracy = Math.round((correctCount / totalKeysPressed) * 100);
+
+      // Populate Result
+      resTotalTime.textContent = `${totalTime}s`;
+      resCps.textContent = `${cps} /s`;
+      resWpm.textContent = `${wpm} WPM`;
+      resAcc.textContent = `${accuracy}%`;
+      resTypo.textContent = typoCount;
+      resTimestamp.textContent = new Date().toLocaleTimeString("id-ID");
+
+      // Check & Save Personal Best
+      const pbs = getPersonalBests();
+      const prevPb = pbs[targetWord];
+      let isNewPb = false;
+
+      if (!prevPb || elapsedSeconds < prevPb.time) {
+        isNewPb = true;
+        pbs[targetWord] = {
+          time: elapsedSeconds,
+          cps: parseFloat(cps),
+          wpm: wpm,
+          acc: accuracy,
+          date: new Date().toISOString()
+        };
+        localStorage.setItem(PB_STORAGE_KEY, JSON.stringify(pbs));
+        updatePbDisplay();
+      }
+
+      resPbSparkle.style.display = isNewPb ? "inline-flex" : "none";
+      resultBanner.classList.add("show");
+      typingInputField.blur(); // Dismiss mobile virtual keyboard on finish
+
+      // Record attempt in session history
+      const attempt = {
+        num: currentSessionAttempts.length + 1,
+        time: elapsedSeconds,
+        cps: parseFloat(cps),
+        wpm: wpm,
+        acc: accuracy,
+        typo: typoCount,
+        isPb: isNewPb
+      };
+      currentSessionAttempts.unshift(attempt);
+      renderHistoryTable();
+
+      showToast(isNewPb ? `🎉 REKOR BARU: Selesai dalam ${totalTime} detik!` : `✅ Berhasil diketik dalam ${totalTime} detik!`);
+    }
+
+    function renderHistoryTable() {
+      if (currentSessionAttempts.length === 0) {
+        historySection.style.display = "none";
+        return;
+      }
+
+      historySection.style.display = "block";
+      historyTbody.innerHTML = "";
+
+      currentSessionAttempts.forEach(att => {
+        const tr = document.createElement("tr");
+        if (att.isPb) tr.className = "best-row";
+        tr.innerHTML = `
+            <td>#${att.num}</td>
+            <td style="font-weight: 700;">${att.time.toFixed(2)}s</td>
+            <td>${att.cps.toFixed(1)}</td>
+            <td>${att.wpm}</td>
+            <td>${att.acc}%</td>
+            <td>${att.typo}</td>
+            <td>${att.isPb ? '⭐ Rekor' : '✓ Selesai'}</td>
+          `;
+        historyTbody.appendChild(tr);
+      });
+    }
+
+    // MODAL CONTROLS
+    function openCatalogModal() {
+      catalogModal.classList.add("active");
+      catalogSearchInput.value = "";
+      fetchCatalogWords();
+      setTimeout(() => catalogSearchInput.focus(), 80);
+    }
+
+    function openCustomModal() {
+      customModal.classList.add("active");
+      customWordInput.value = "";
+      customCharCount.textContent = "0 karakter";
+      setTimeout(() => customWordInput.focus(), 80);
+    }
+
+    function closeModals() {
+      catalogModal.classList.remove("active");
+      customModal.classList.remove("active");
+      focusTyping();
+    }
+
+    // CLIENT-SIDE DATASET LOADING (words.json)
+    let allWordsDatabase = null;
+    let isLoadingWords = false;
+
+    async function loadWordsDatabase() {
+      if (allWordsDatabase) return allWordsDatabase;
+      if (isLoadingWords) {
+        while (isLoadingWords) {
+          await new Promise(r => setTimeout(r, 40));
+        }
+        return allWordsDatabase;
+      }
+
+      isLoadingWords = true;
+      try {
+        const res = await fetch("./words.json");
+        if (!res.ok) throw new Error("HTTP Status " + res.status);
+        const rawList = await res.json();
+        allWordsDatabase = rawList.map(w => ({
+          word: w,
+          length: w.length
+        }));
+      } catch (err) {
+        console.warn("words.json lokal tidak dapat diakses langsung via fetch (kemungkinan dibuka via file:// tanpa local web server):", err);
+        // Fallback ke preset agar aplikasi tetap berjalan 100%
+        allWordsDatabase = PRESET_WORDS.map(p => ({
+          word: p.word,
+          length: p.length
+        }));
+      } finally {
+        isLoadingWords = false;
+      }
+      return allWordsDatabase;
+    }
+
+    // FETCH CATALOG WORDS FROM CLIENT-SIDE DATASET
+    async function fetchCatalogWords() {
+      catalogWordsGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px 0;">Mengambil daftar kata...</div>`;
+
+      const dataset = await loadWordsDatabase();
+
+      const activeFilterTab = document.querySelector(".filter-tab.active")?.dataset.filter || "all";
+      let minLen = 16;
+      let maxLen = 999;
+
+      if (activeFilterTab === "extreme") {
+        minLen = 51;
+      } else if (activeFilterTab === "super") {
+        minLen = 30;
+        maxLen = 50;
+      } else if (activeFilterTab === "medium") {
+        minLen = 20;
+        maxLen = 29;
+      } else if (activeFilterTab === "standard") {
+        minLen = 16;
+        maxLen = 19;
+      }
+
+      const q = catalogSearchInput.value.trim().toLowerCase();
+      const sortBy = catalogSort.value;
+
+      // Filter kata
+      let filtered = dataset.filter(item => {
+        if (item.length < minLen || item.length > maxLen) return false;
+        if (q && !item.word.includes(q)) return false;
+        return true;
+      });
+
+      // Sorting
+      if (sortBy === "len_asc") {
+        filtered.sort((a, b) => a.length - b.length || a.word.localeCompare(b.word));
+      } else if (sortBy === "alpha") {
+        filtered.sort((a, b) => a.word.localeCompare(b.word));
+      } else { // len_desc
+        filtered.sort((a, b) => b.length - a.length || a.word.localeCompare(b.word));
+      }
+
+      catalogCountText.textContent = `Ditemukan ${filtered.length.toLocaleString("id-ID")} kata`;
+
+      if (filtered.length === 0) {
+        catalogWordsGrid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 40px 0;">Tidak ada kata yang cocok dengan filter.</div>`;
+        return;
+      }
+
+      catalogWordsGrid.innerHTML = "";
+      const displayLimit = filtered.slice(0, 150);
+      displayLimit.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "word-pick-item";
+        card.innerHTML = `
+            <span class="word-name">${escapeHtml(item.word)}</span>
+            <span class="word-len">${item.length}</span>
+          `;
+        card.addEventListener("click", () => {
+          setTargetWord(item.word);
+          closeModals();
+          showToast(`🎯 Kata '${item.word}' (${item.length} huruf) dipilih!`);
+        });
+        catalogWordsGrid.appendChild(card);
+      });
+    }
+
+    // PICK RANDOM LONG WORD (CLIENT-SIDE)
+    async function pickRandomWordFromCatalog() {
+      try {
+        const dataset = await loadWordsDatabase();
+        const candidates = dataset.filter(item => item.length >= 18);
+        if (candidates.length > 0) {
+          const randIdx = Math.floor(Math.random() * candidates.length);
+          const picked = candidates[randIdx];
+          setTargetWord(picked.word);
+          showToast(`🎲 Kata acak terpilih: '${picked.word}' (${picked.length} huruf)!`);
+          return;
+        }
+      } catch (e) {
+        console.error(e);
+      }
+      const randIdx = Math.floor(Math.random() * PRESET_WORDS.length);
+      setTargetWord(PRESET_WORDS[randIdx].word);
+    }
+
+    // UTILITIES
+    function showToast(msg) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      clearTimeout(t._timer);
+      t._timer = setTimeout(() => t.classList.remove("show"), 2600);
+    }
+
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function debounce(func, wait) {
+      let timeout;
+      return function (...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+      };
+    }
+  </script>
+</body>
+
+</html>
