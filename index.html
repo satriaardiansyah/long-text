@@ -1180,86 +1180,116 @@
       } catch { return {} }
     };
 
-    /* sound: ultra-premium custom mechanical keyboard "Creamy Thock" (Keycult / Oil King style) */
+    /* 10FastFingers Sound Engine */
     let ac = null;
-    let noiseBuf = null;
-    function getNoiseBuf(ctx) {
-      if (noiseBuf) return noiseBuf;
-      const len = Math.floor(ctx.sampleRate * 0.04);
-      noiseBuf = ctx.createBuffer(1, len, ctx.sampleRate);
-      const ch = noiseBuf.getChannelData(0);
-      for (let i = 0; i < len; i++) ch[i] = Math.random() * 2 - 1;
-      return noiseBuf;
+    const soundCache = {};
+    const SOUND_PATHS = {
+      error: "./sounds/error.mp3",
+      finish: "./sounds/correct-alt.mp3",
+      space: "./sounds/keys/space.mp3",
+      backspace: "./sounds/keys/backspace.mp3"
+    };
+
+    function getAudioContext() {
+      if (!ac) {
+        ac = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (ac.state === "suspended") {
+        ac.resume();
+      }
+      return ac;
     }
 
-    function click(bad) {
-      if (!sound) return;
+    async function loadSoundBuffer(url) {
+      if (soundCache[url]) return soundCache[url];
       try {
-        ac = ac || new (window.AudioContext || window.webkitAudioContext)();
-        if (ac.state === "suspended") ac.resume();
-        const now = ac.currentTime;
-
-        if (bad) {
-          // Typo: Muted tactile wooden thud (smooth, non-harsh error feedback)
-          const osc = ac.createOscillator();
-          const gain = ac.createGain();
-          const flt = ac.createBiquadFilter();
-          osc.type = "triangle";
-          osc.frequency.setValueAtTime(115, now);
-          osc.frequency.exponentialRampToValueAtTime(42, now + 0.065);
-          flt.type = "lowpass";
-          flt.frequency.setValueAtTime(400, now);
-          gain.gain.setValueAtTime(0.16, now);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.065);
-          osc.connect(flt); flt.connect(gain); gain.connect(ac.destination);
-          osc.start(now); osc.stop(now + 0.07);
-          return;
-        }
-
-        // Keycult Creamy Thock synthesis:
-        const jitter = (Math.random() - 0.5) * 16;
-        const vJitter = 0.92 + Math.random() * 0.16;
-
-        // 1. Resonant Body (Creamy lubed bottom-out)
-        const bodyOsc = ac.createOscillator();
-        const bodyGain = ac.createGain();
-        const bodyFlt = ac.createBiquadFilter();
-        bodyOsc.type = "triangle";
-        bodyOsc.frequency.setValueAtTime(215 + jitter, now);
-        bodyOsc.frequency.exponentialRampToValueAtTime(58 + jitter * 0.2, now + 0.042);
-        bodyFlt.type = "lowpass";
-        bodyFlt.frequency.setValueAtTime(800, now);
-        bodyFlt.frequency.exponentialRampToValueAtTime(240, now + 0.042);
-        bodyGain.gain.setValueAtTime(0.24 * vJitter, now);
-        bodyGain.gain.exponentialRampToValueAtTime(0.001, now + 0.048);
-        bodyOsc.connect(bodyFlt); bodyFlt.connect(bodyGain); bodyGain.connect(ac.destination);
-        bodyOsc.start(now); bodyOsc.stop(now + 0.05);
-
-        // 2. Desk / Case Sub-Thump (Gasket & Brass Weight Resonance)
-        const subOsc = ac.createOscillator();
-        const subGain = ac.createGain();
-        subOsc.type = "sine";
-        subOsc.frequency.setValueAtTime(95 + jitter * 0.4, now);
-        subOsc.frequency.exponentialRampToValueAtTime(40, now + 0.038);
-        subGain.gain.setValueAtTime(0.18 * vJitter, now);
-        subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
-        subOsc.connect(subGain); subGain.connect(ac.destination);
-        subOsc.start(now); subOsc.stop(now + 0.042);
-
-        // 3. Crisp lubed POM stem contact transient (Snap/Pop)
-        const nSrc = ac.createBufferSource();
-        nSrc.buffer = getNoiseBuf(ac);
-        const nFlt = ac.createBiquadFilter();
-        nFlt.type = "bandpass";
-        nFlt.frequency.setValueAtTime(2250 + jitter * 15, now);
-        nFlt.Q.setValueAtTime(3.6, now);
-        const nGain = ac.createGain();
-        nGain.gain.setValueAtTime(0.08 * vJitter, now);
-        nGain.gain.exponentialRampToValueAtTime(0.001, now + 0.016);
-        nSrc.connect(nFlt); nFlt.connect(nGain); nGain.connect(ac.destination);
-        nSrc.start(now); nSrc.stop(now + 0.02);
-      } catch { }
+        const ctx = getAudioContext();
+        const res = await fetch(url);
+        if (!res.ok) throw 0;
+        const arrayBuf = await res.arrayBuffer();
+        const audioBuf = await ctx.decodeAudioData(arrayBuf);
+        soundCache[url] = audioBuf;
+        return audioBuf;
+      } catch (e) {
+        return null;
+      }
     }
+
+    function playBuffer(buf, volume = 0.35) {
+      if (!buf) return;
+      try {
+        const ctx = getAudioContext();
+        const src = ctx.createBufferSource();
+        src.buffer = buf;
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(volume, ctx.currentTime);
+        src.connect(gain);
+        gain.connect(ctx.destination);
+        src.start(0);
+      } catch (e) { }
+    }
+
+    function playFallbackAudio(url, volume = 0.35) {
+      try {
+        const a = new Audio(url);
+        a.volume = volume;
+        a.play().catch(() => {});
+      } catch (e) { }
+    }
+
+    function playSoundFile(url, volume = 0.35) {
+      if (!sound) return;
+      if (soundCache[url]) {
+        playBuffer(soundCache[url], volume);
+      } else {
+        loadSoundBuffer(url).then(buf => {
+          if (buf) soundCache[url] = buf;
+        });
+        playFallbackAudio(url, volume);
+      }
+    }
+
+    function click(bad, key) {
+      if (!sound) return;
+      getAudioContext();
+      if (bad) {
+        playSoundFile(SOUND_PATHS.error, 0.35);
+        return;
+      }
+      const k = (key || "").toLowerCase();
+      let url = SOUND_PATHS.space;
+      if (k === "backspace") {
+        url = SOUND_PATHS.backspace;
+      } else if (k === " " || k === "space") {
+        url = SOUND_PATHS.space;
+      } else if (k.length === 1 && k >= "a" && k <= "z") {
+        url = `./sounds/keys/${k}.mp3`;
+      }
+      playSoundFile(url, 0.35);
+    }
+
+    function playFinishSound() {
+      if (!sound) return;
+      playSoundFile(SOUND_PATHS.finish, 0.4);
+    }
+
+    function preloadSounds() {
+      const list = [
+        SOUND_PATHS.error,
+        SOUND_PATHS.finish,
+        SOUND_PATHS.space,
+        SOUND_PATHS.backspace
+      ];
+      for (let i = 97; i <= 122; i++) {
+        list.push(`./sounds/keys/${String.fromCharCode(i)}.mp3`);
+      }
+      list.forEach(url => loadSoundBuffer(url));
+    }
+
+    window.addEventListener("pointerdown", () => { getAudioContext(); preloadSounds(); }, { once: true });
+    window.addEventListener("keydown", () => { getAudioContext(); preloadSounds(); }, { once: true });
+    setTimeout(preloadSounds, 100);
+
     function toast(m) { const t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove("show"), 2400) }
 
     /* target & timer modes */
@@ -1434,6 +1464,7 @@
           typed = v;
           paint();
           stats();
+          click(false, "backspace");
         } else {
           inp.value = typed;
         }
@@ -1458,7 +1489,7 @@
           typos++;
           click(true);
         } else {
-          click(false);
+          click(false, char);
         }
         typed = v;
         paint();
@@ -1535,6 +1566,7 @@
       history_();
       setTimeout(() => $("result").scrollIntoView({ behavior: "smooth", block: "center" }), 80);
 
+      playFinishSound();
       if (pb) {
         toast(`🎉 Rekor baru: ${time} detik!`);
       } else if (isTimeUp) {
