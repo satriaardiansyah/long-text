@@ -433,7 +433,9 @@
       border: 0;
       background: transparent;
       color: transparent;
-      z-index: 2
+      z-index: 2;
+      user-select: none;
+      -webkit-user-select: none
     }
 
     .cover {
@@ -893,6 +895,33 @@
       }
     }
 
+    @media (max-width:640px) {
+      body {
+        padding-bottom: calc(55vh + env(safe-area-inset-bottom))
+      }
+
+      .arena {
+        scroll-margin-top: 64px
+      }
+
+      .box {
+        max-height: 220px;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        scroll-margin-top: 64px;
+        scrollbar-width: thin
+      }
+
+      .box::-webkit-scrollbar {
+        width: 4px
+      }
+
+      .box::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, .18);
+        border-radius: 4px
+      }
+    }
+
     @media (max-width:360px) {
       .pbtn {
         font-size: .76rem
@@ -953,8 +982,9 @@
         <div class="bar"><i id="bar"></i></div>
 
         <div class="box" id="box">
-          <input class="hidden-input" id="inp" type="text" autocomplete="off" autocorrect="off" autocapitalize="none"
-            spellcheck="false" enterkeyhint="done" aria-label="Ketik kata di sini" />
+          <input class="hidden-input" id="inp" type="text" autocomplete="off" autocorrect="off" autocapitalize="off"
+            spellcheck="false" data-gramm="false" data-enable-grammarly="false" enterkeyhint="done" inputmode="text"
+            aria-label="Ketik kata di sini" />
           <div class="cover on" id="cover">Ketuk di sini untuk mulai mengetik ⌨️</div>
         </div>
 
@@ -1048,7 +1078,20 @@
       get(k) { try { return localStorage.getItem(k) } catch { return null } },
       set(k, v) { try { localStorage.setItem(k, v) } catch { } }
     };
-    const pbs = () => { try { return JSON.parse(store.get(PB_KEY)) || {} } catch { return {} } };
+    const pbs = () => {
+      try {
+        const data = JSON.parse(store.get(PB_KEY)) || {};
+        let changed = false;
+        for (const k in data) {
+          if (data[k] && (data[k].cps > 35 || data[k].time < 0.4)) {
+            delete data[k];
+            changed = true;
+          }
+        }
+        if (changed) store.set(PB_KEY, JSON.stringify(data));
+        return data;
+      } catch { return {} }
+    };
 
     /* sound */
     let ac = null;
@@ -1079,13 +1122,14 @@
       document.querySelectorAll(".chip").forEach((c, i) => c.classList.toggle("active", PRESETS[i].w === target));
       reset();
     }
+    let lastKeyTime = 0;
     function reset() {
       clearInterval(timer); timer = null;
-      started = done = false; elapsed = typos = keys = 0; typed = ""; inp.value = "";
+      started = done = false; elapsed = typos = keys = 0; typed = ""; inp.value = ""; lastKeyTime = 0;
       $("t").textContent = "0.00s"; $("cps").textContent = "0.0"; $("wpm").textContent = "0";
       $("prog").textContent = "0/" + target.length; $("acc").textContent = "100%"; $("bar").style.width = "0";
       box.classList.remove("success"); $("result").classList.remove("show");
-      render(); focusBox();
+      render(); focusBox(false);
     }
     function render() {
       box.querySelectorAll(".ch").forEach(n => n.remove());
@@ -1103,28 +1147,162 @@
         s.className = "ch" + (i < typed.length ? (typed[i] === target[i] ? " ok" : " bad") : i === typed.length ? " cur" : "");
       });
       const c = box.querySelector(".cur");
-      if (c && box.scrollHeight > box.clientHeight + 4) c.scrollIntoView({ block: "nearest" });
-    }
-    function focusBox() {
-      try { inp.focus({ preventScroll: true }) } catch { inp.focus() }
-      if (document.activeElement === inp) { cover.classList.remove("on"); box.classList.add("focused") }
+      if (c && box.scrollHeight > box.clientHeight + 4) c.scrollIntoView({ block: "nearest", behavior: "smooth" });
     }
 
+    function scrollIntoTypingView() {
+      const isMobile = window.innerWidth <= 768;
+      if (!isMobile) return;
+
+      const topBar = document.querySelector(".top");
+      const topBarHeight = topBar ? topBar.offsetHeight : 54;
+      const arena = document.querySelector(".arena");
+      const b = $("box");
+      if (!arena || !b) return;
+
+      const vv = window.visualViewport;
+      const availHeight = (vv ? vv.height : window.innerHeight) - topBarHeight;
+      const arenaRect = arena.getBoundingClientRect();
+      const boxRect = b.getBoundingClientRect();
+
+      let targetScrollY;
+      // Posisi scroll agar arena/box berada pas di bawah header dan tidak tertutup keyboard
+      if (arena.offsetHeight <= availHeight - 16) {
+        targetScrollY = window.scrollY + arenaRect.top - topBarHeight - 8;
+      } else {
+        targetScrollY = window.scrollY + boxRect.top - topBarHeight - 48;
+      }
+
+      window.scrollTo({
+        top: Math.max(0, Math.round(targetScrollY)),
+        behavior: "smooth"
+      });
+    }
+
+    function focusBox(shouldScroll = false) {
+      try { inp.focus() } catch { }
+      if (document.activeElement === inp) {
+        cover.classList.remove("on");
+        box.classList.add("focused");
+      }
+      if (shouldScroll) {
+        scrollIntoTypingView();
+        setTimeout(scrollIntoTypingView, 120);
+        setTimeout(scrollIntoTypingView, 320);
+      }
+    }
+
+    /* anti-cheat: cegah paste, drop, dan autocomplete / rekomendasi kata keyboard */
+    function blockCheat(e, msg) {
+      if (e) {
+        e.preventDefault();
+        if (e.clipboardData && e.clipboardData.clearData) {
+          try { e.clipboardData.clearData() } catch { }
+        }
+      }
+      toast(msg || "⚠️ Paste & rekomendasi kata dinonaktifkan!");
+    }
+
+    inp.addEventListener("paste", e => blockCheat(e, "⚠️ Dilarang menempel (paste) kata!"));
+    box.addEventListener("paste", e => blockCheat(e, "⚠️ Dilarang menempel (paste) kata!"));
+    window.addEventListener("paste", e => {
+      if (document.activeElement === inp) blockCheat(e, "⚠️ Dilarang menempel (paste) kata!");
+    });
+
+    inp.addEventListener("copy", e => e.preventDefault());
+    inp.addEventListener("cut", e => e.preventDefault());
+    inp.addEventListener("drop", e => blockCheat(e, "⚠️ Drag & drop dinonaktifkan!"));
+    box.addEventListener("drop", e => blockCheat(e, "⚠️ Drag & drop dinonaktifkan!"));
+    inp.addEventListener("contextmenu", e => e.preventDefault());
+    box.addEventListener("contextmenu", e => e.preventDefault());
+
+    inp.addEventListener("beforeinput", e => {
+      if (done) return;
+      if (e.inputType === "insertFromPaste" || e.inputType === "insertFromDrop") {
+        blockCheat(e, "⚠️ Dilarang menempel (paste) kata!");
+        return;
+      }
+      if (e.inputType === "insertReplacementText") {
+        blockCheat(e, "⚠️ Rekomendasi keyboard dilarang! Ketik per huruf.");
+        return;
+      }
+      if (e.data && e.data.length > 1) {
+        blockCheat(e, "⚠️ Rekomendasi keyboard dilarang! Ketik per huruf.");
+        return;
+      }
+    });
+
     /* typing */
-    inp.addEventListener("focus", () => { cover.classList.remove("on"); box.classList.add("focused") });
+    inp.addEventListener("focus", () => {
+      cover.classList.remove("on");
+      box.classList.add("focused");
+      scrollIntoTypingView();
+      setTimeout(scrollIntoTypingView, 120);
+      setTimeout(scrollIntoTypingView, 320);
+    });
     inp.addEventListener("blur", () => { if (!done) { cover.classList.add("on"); box.classList.remove("focused") } });
-    box.addEventListener("click", focusBox);
+    box.addEventListener("click", () => focusBox(true));
+    cover.addEventListener("click", () => focusBox(true));
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", () => {
+        if (document.activeElement === inp && !done) {
+          scrollIntoTypingView();
+        }
+      });
+    }
+
     inp.addEventListener("input", () => {
       if (done) return;
-      const v = inp.value.toLowerCase().replace(/\s/g, "");
-      if (inp.value !== v) inp.value = v;
-      if (!started && v.length) start();
-      for (let i = typed.length; i < v.length; i++) {
-        keys++;
-        if (v[i] !== target[i]) { typos++; click(true) } else click(false);
+      const raw = inp.value;
+      const v = raw.toLowerCase().replace(/\s/g, "");
+      if (raw !== v) inp.value = v;
+
+      // Anti-cheat: cegah pengetikan banyak huruf sekaligus (bypass paste/rekomendasi kata)
+      // atau penggantian teks awal
+      if (v.length > typed.length + 1 || (v.length > typed.length && !v.startsWith(typed))) {
+        inp.value = typed;
+        toast("⚠️ Rekomendasi keyboard & paste dilarang! Ketik satu per satu.");
+        return;
       }
-      typed = v; paint(); stats();
-      if (typed === target) finish();
+
+      // Handle tombol hapus (Backspace)
+      if (v.length < typed.length) {
+        if (typed.startsWith(v)) {
+          typed = v;
+          paint();
+          stats();
+        } else {
+          inp.value = typed;
+        }
+        return;
+      }
+
+      // Pengetikan normal: tepat 1 karakter baru ditambahkan
+      if (v.length === typed.length + 1) {
+        const now = performance.now();
+        if (lastKeyTime > 0 && now - lastKeyTime < 18) {
+          // Terlalu cepat (< 18ms), proteksi bot/autoclicker
+          inp.value = typed;
+          toast("⚠️ Terlalu cepat! Ketik manual secara wajar.");
+          return;
+        }
+        lastKeyTime = now;
+
+        if (!started && v.length) start();
+        const char = v[typed.length];
+        keys++;
+        if (char !== target[typed.length]) {
+          typos++;
+          click(true);
+        } else {
+          click(false);
+        }
+        typed = v;
+        paint();
+        stats();
+        if (typed === target) finish();
+      }
     });
     function start() {
       started = true; t0 = performance.now();
@@ -1207,7 +1385,7 @@
     $("btn-catalog").onclick = openCatalog;
     $("btn-custom").onclick = openCustom;
     $("btn-random").onclick = $("btn-next").onclick = randomWord;
-    $("btn-restart").onclick = reset;
+    $("btn-restart").onclick = () => { reset(); focusBox(true); };
     document.querySelectorAll("[data-close]").forEach(b => b.onclick = closeAll);
     document.querySelectorAll(".modal").forEach(m => m.addEventListener("click", e => { if (e.target === m) closeAll() }));
     $("q").addEventListener("input", debounce(fillCatalog, 200));
