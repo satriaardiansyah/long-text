@@ -382,6 +382,64 @@
       border-color: var(--mint)
     }
 
+    .box.finished {
+      border-color: rgba(245, 197, 66, .7)
+    }
+
+    /* timer bar */
+    .timer-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .tb-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .82rem;
+      font-weight: 700;
+      color: var(--dim);
+    }
+
+    .tb-group {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .tb-group::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tbtn {
+      padding: 4px 11px;
+      border-radius: 9px;
+      background: var(--s2);
+      border: 1px solid var(--line);
+      font-size: .78rem;
+      font-weight: 600;
+      color: var(--dim);
+      transition: all .15s ease;
+      white-space: nowrap;
+    }
+
+    .tbtn:hover {
+      border-color: rgba(245, 197, 66, .4);
+      color: var(--text);
+    }
+
+    .tbtn.active {
+      background: rgba(245, 197, 66, .15);
+      border-color: rgba(245, 197, 66, .55);
+      color: var(--gold);
+      font-weight: 700;
+    }
+
     .ch {
       position: relative;
       color: var(--mute);
@@ -972,8 +1030,22 @@
       </section>
 
       <section class="card arena">
+        <div class="timer-bar">
+          <div class="tb-left">
+            <span>⏱️</span>
+            <span>Timer</span>
+          </div>
+          <div class="tb-group" id="timer-group">
+            <button class="tbtn active" data-time="0">Bebas</button>
+            <button class="tbtn" data-time="10">10s</button>
+            <button class="tbtn" data-time="15">15s</button>
+            <button class="tbtn" data-time="20">20s</button>
+            <button class="tbtn" data-time="custom" id="btn-custom-time">Custom</button>
+          </div>
+        </div>
+
         <div class="stats">
-          <div class="timer"><span>Stopwatch</span><strong id="t">0.00s</strong></div>
+          <div class="timer"><span id="t-label">Stopwatch</span><strong id="t">0.00s</strong></div>
           <div class="stat"><span>CPS</span><strong id="cps">0.0</strong></div>
           <div class="stat"><span>WPM</span><strong id="wpm">0</strong></div>
           <div class="stat"><span>Progres</span><strong id="prog">0/0</strong></div>
@@ -989,7 +1061,7 @@
         </div>
 
         <div class="result" id="result">
-          <h3>🎯 Selesai! <span class="badge" id="r-pb" hidden>Rekor baru</span></h3>
+          <h3><span id="r-title">🎯 Selesai!</span> <span class="badge" id="r-pb" hidden>Rekor baru</span></h3>
           <div class="rgrid">
             <div class="rc big"><span>Waktu</span><strong id="r-t">0s</strong></div>
             <div class="rc"><span>CPS</span><strong id="r-cps">0</strong></div>
@@ -1054,6 +1126,21 @@
     </div>
   </div>
 
+  <div class="modal" id="m-timer" role="dialog" aria-modal="true">
+    <div class="sheet">
+      <div class="sh"><span>Atur Waktu Custom</span><button class="icon-btn" data-close aria-label="Tutup">✕</button></div>
+      <div class="sb">
+        <label for="inp-custom-time" style="font-size:.84rem;color:var(--dim)">Durasi countdown dalam detik (3–300):</label>
+        <input class="field" id="inp-custom-time" type="number" min="3" max="300" placeholder="Contoh: 30" style="margin-top:6px" />
+        <div class="meta"><span>Misal: 5, 25, 30, 45, 60 detik</span></div>
+      </div>
+      <div class="sf">
+        <button class="btn" data-close>Batal</button>
+        <button class="btn primary" id="btn-apply-timer">Terapkan</button>
+      </div>
+    </div>
+  </div>
+
   <div id="toast" role="status"></div>
 
   <script>
@@ -1093,24 +1180,92 @@
       } catch { return {} }
     };
 
-    /* sound */
+    /* sound: ultra-premium custom mechanical keyboard "Creamy Thock" (Keycult / Oil King style) */
     let ac = null;
+    let noiseBuf = null;
+    function getNoiseBuf(ctx) {
+      if (noiseBuf) return noiseBuf;
+      const len = Math.floor(ctx.sampleRate * 0.04);
+      noiseBuf = ctx.createBuffer(1, len, ctx.sampleRate);
+      const ch = noiseBuf.getChannelData(0);
+      for (let i = 0; i < len; i++) ch[i] = Math.random() * 2 - 1;
+      return noiseBuf;
+    }
+
     function click(bad) {
       if (!sound) return;
       try {
         ac = ac || new (window.AudioContext || window.webkitAudioContext)();
         if (ac.state === "suspended") ac.resume();
-        const o = ac.createOscillator(), g = ac.createGain(), n = ac.currentTime, d = bad ? .08 : .04;
-        o.connect(g); g.connect(ac.destination);
-        o.type = bad ? "sawtooth" : "sine";
-        o.frequency.setValueAtTime(bad ? 160 : 450, n); o.frequency.exponentialRampToValueAtTime(bad ? 70 : 120, n + d);
-        g.gain.setValueAtTime(bad ? .12 : .1, n); g.gain.exponentialRampToValueAtTime(.01, n + d);
-        o.start(); o.stop(n + d);
+        const now = ac.currentTime;
+
+        if (bad) {
+          // Typo: Muted tactile wooden thud (smooth, non-harsh error feedback)
+          const osc = ac.createOscillator();
+          const gain = ac.createGain();
+          const flt = ac.createBiquadFilter();
+          osc.type = "triangle";
+          osc.frequency.setValueAtTime(115, now);
+          osc.frequency.exponentialRampToValueAtTime(42, now + 0.065);
+          flt.type = "lowpass";
+          flt.frequency.setValueAtTime(400, now);
+          gain.gain.setValueAtTime(0.16, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.065);
+          osc.connect(flt); flt.connect(gain); gain.connect(ac.destination);
+          osc.start(now); osc.stop(now + 0.07);
+          return;
+        }
+
+        // Keycult Creamy Thock synthesis:
+        const jitter = (Math.random() - 0.5) * 16;
+        const vJitter = 0.92 + Math.random() * 0.16;
+
+        // 1. Resonant Body (Creamy lubed bottom-out)
+        const bodyOsc = ac.createOscillator();
+        const bodyGain = ac.createGain();
+        const bodyFlt = ac.createBiquadFilter();
+        bodyOsc.type = "triangle";
+        bodyOsc.frequency.setValueAtTime(215 + jitter, now);
+        bodyOsc.frequency.exponentialRampToValueAtTime(58 + jitter * 0.2, now + 0.042);
+        bodyFlt.type = "lowpass";
+        bodyFlt.frequency.setValueAtTime(800, now);
+        bodyFlt.frequency.exponentialRampToValueAtTime(240, now + 0.042);
+        bodyGain.gain.setValueAtTime(0.24 * vJitter, now);
+        bodyGain.gain.exponentialRampToValueAtTime(0.001, now + 0.048);
+        bodyOsc.connect(bodyFlt); bodyFlt.connect(bodyGain); bodyGain.connect(ac.destination);
+        bodyOsc.start(now); bodyOsc.stop(now + 0.05);
+
+        // 2. Desk / Case Sub-Thump (Gasket & Brass Weight Resonance)
+        const subOsc = ac.createOscillator();
+        const subGain = ac.createGain();
+        subOsc.type = "sine";
+        subOsc.frequency.setValueAtTime(95 + jitter * 0.4, now);
+        subOsc.frequency.exponentialRampToValueAtTime(40, now + 0.038);
+        subGain.gain.setValueAtTime(0.18 * vJitter, now);
+        subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+        subOsc.connect(subGain); subGain.connect(ac.destination);
+        subOsc.start(now); subOsc.stop(now + 0.042);
+
+        // 3. Crisp lubed POM stem contact transient (Snap/Pop)
+        const nSrc = ac.createBufferSource();
+        nSrc.buffer = getNoiseBuf(ac);
+        const nFlt = ac.createBiquadFilter();
+        nFlt.type = "bandpass";
+        nFlt.frequency.setValueAtTime(2250 + jitter * 15, now);
+        nFlt.Q.setValueAtTime(3.6, now);
+        const nGain = ac.createGain();
+        nGain.gain.setValueAtTime(0.08 * vJitter, now);
+        nGain.gain.exponentialRampToValueAtTime(0.001, now + 0.016);
+        nSrc.connect(nFlt); nFlt.connect(nGain); nGain.connect(ac.destination);
+        nSrc.start(now); nSrc.stop(now + 0.02);
       } catch { }
     }
     function toast(m) { const t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove("show"), 2400) }
 
-    /* target */
+    /* target & timer modes */
+    let timerMode = 0; // 0 = Bebas / Tanpa Timer (default), 10, 15, 20, atau custom
+    let customTimerVal = 30;
+
     function setTarget(w) {
       target = w.trim().toLowerCase();
       $("info-len").textContent = target.length + " huruf";
@@ -1126,9 +1281,16 @@
     function reset() {
       clearInterval(timer); timer = null;
       started = done = false; elapsed = typos = keys = 0; typed = ""; inp.value = ""; lastKeyTime = 0;
-      $("t").textContent = "0.00s"; $("cps").textContent = "0.0"; $("wpm").textContent = "0";
+      if (timerMode > 0) {
+        $("t-label").textContent = "Sisa Waktu";
+        $("t").textContent = timerMode.toFixed(2) + "s";
+      } else {
+        $("t-label").textContent = "Stopwatch";
+        $("t").textContent = "0.00s";
+      }
+      $("cps").textContent = "0.0"; $("wpm").textContent = "0";
       $("prog").textContent = "0/" + target.length; $("acc").textContent = "100%"; $("bar").style.width = "0";
-      box.classList.remove("success"); $("result").classList.remove("show");
+      box.classList.remove("success", "finished"); $("result").classList.remove("show");
       render(); focusBox(false);
     }
     function render() {
@@ -1301,38 +1463,87 @@
         typed = v;
         paint();
         stats();
-        if (typed === target) finish();
+        // Selesai jika mencapai panjang kata, tetap bisa finish meskipun ada typo
+        if (typed.length >= target.length) finish();
       }
     });
     function start() {
       started = true; t0 = performance.now();
-      timer = setInterval(() => { elapsed = (performance.now() - t0) / 1000; $("t").textContent = elapsed.toFixed(2) + "s"; stats() }, 40);
+      timer = setInterval(() => {
+        elapsed = (performance.now() - t0) / 1000;
+        if (timerMode > 0) {
+          const remaining = Math.max(0, timerMode - elapsed);
+          $("t").textContent = remaining.toFixed(2) + "s";
+          stats();
+          if (remaining <= 0) finish();
+        } else {
+          $("t").textContent = elapsed.toFixed(2) + "s";
+          stats();
+        }
+      }, 40);
     }
     function stats() {
       const n = typed.length;
       $("prog").textContent = n + "/" + target.length;
-      $("bar").style.width = Math.min(100, n / target.length * 100) + "%";
+      if (timerMode > 0) {
+        const timePct = Math.min(100, (elapsed / timerMode) * 100);
+        const charPct = Math.min(100, (n / target.length) * 100);
+        $("bar").style.width = Math.max(timePct, charPct) + "%";
+      } else {
+        $("bar").style.width = Math.min(100, n / target.length * 100) + "%";
+      }
       if (elapsed > 0) { $("cps").textContent = (n / elapsed).toFixed(1); $("wpm").textContent = Math.round(n / 5 / (elapsed / 60)) }
-      if (keys > 0) $("acc").textContent = Math.round((keys - typos) / keys * 100) + "%";
+      if (keys > 0) $("acc").textContent = Math.max(0, Math.round((keys - typos) / keys * 100)) + "%";
     }
     function finish() {
+      if (done) return;
       clearInterval(timer); timer = null; started = false; done = true;
       elapsed = (performance.now() - t0) / 1000;
-      const time = elapsed.toFixed(2), cps = target.length / elapsed, wpm = Math.round(target.length / 5 / (elapsed / 60)), acc = Math.round((keys - typos) / keys * 100);
-      $("t").textContent = time + "s"; box.classList.add("success");
-      $("r-t").textContent = time + "s"; $("r-cps").textContent = cps.toFixed(2); $("r-wpm").textContent = wpm; $("r-acc").textContent = acc + "%"; $("r-typo").textContent = typos;
-      const all = pbs(), prev = all[target]; let pb = false;
-      if (!prev || elapsed < prev.time) {
-        pb = true; all[target] = { time: elapsed, cps, wpm, acc }; store.set(PB_KEY, JSON.stringify(all));
-        $("info-pb").textContent = `👑 Rekor ${elapsed.toFixed(2)}s · ${cps.toFixed(1)} cps`;
+      if (timerMode > 0 && elapsed > timerMode) elapsed = timerMode;
+
+      const time = elapsed.toFixed(2);
+      const charsTyped = typed.length;
+      const cps = elapsed > 0 ? (charsTyped / elapsed).toFixed(2) : "0.00";
+      const wpm = elapsed > 0 ? Math.round((charsTyped / 5) / (elapsed / 60)) : 0;
+      const acc = keys > 0 ? Math.max(0, Math.round(((keys - typos) / keys) * 100)) : 100;
+
+      $("t").textContent = time + "s";
+      box.classList.add(typos === 0 ? "success" : "finished");
+
+      const isTimeUp = timerMode > 0 && charsTyped < target.length && elapsed >= timerMode - 0.05;
+      const isPerfect = typos === 0 && charsTyped === target.length;
+
+      $("r-title").textContent = isTimeUp ? "⏰ Waktu Habis!" : (isPerfect ? "🎯 Selesai Sempurna!" : "🎯 Selesai!");
+      $("r-t").textContent = time + "s";
+      $("r-cps").textContent = cps;
+      $("r-wpm").textContent = wpm;
+      $("r-acc").textContent = acc + "%";
+      $("r-typo").textContent = typos;
+
+      const all = pbs(), prev = all[target];
+      let pb = false;
+      if (charsTyped === target.length && (!prev || elapsed < prev.time)) {
+        pb = true;
+        all[target] = { time: elapsed, cps: parseFloat(cps), wpm, acc };
+        store.set(PB_KEY, JSON.stringify(all));
+        $("info-pb").textContent = `👑 Rekor ${elapsed.toFixed(2)}s · ${cps} cps`;
       }
       $("r-pb").hidden = !pb;
       $("result").classList.add("show");
       inp.blur();
-      attempts.unshift({ n: attempts.length + 1, time: elapsed, cps, wpm, acc, pb });
+      attempts.unshift({ n: attempts.length + 1, time: elapsed, cps: parseFloat(cps), wpm, acc, pb });
       history_();
       setTimeout(() => $("result").scrollIntoView({ behavior: "smooth", block: "center" }), 80);
-      toast(pb ? `🎉 Rekor baru: ${time} detik` : `✅ Selesai dalam ${time} detik`);
+
+      if (pb) {
+        toast(`🎉 Rekor baru: ${time} detik!`);
+      } else if (isTimeUp) {
+        toast(`⏰ Waktu habis: ${charsTyped}/${target.length} huruf (${acc}% akurasi)`);
+      } else if (typos > 0) {
+        toast(`✅ Selesai dalam ${time}s (${typos} typo, ${acc}% akurasi)`);
+      } else {
+        toast(`✅ Selesai sempurna dalam ${time} detik!`);
+      }
     }
     function history_() {
       const h = $("history"); h.hidden = !attempts.length;
@@ -1381,6 +1592,50 @@
     function openCustom() { $("m-custom").classList.add("on"); $("custom").value = ""; $("ccount").textContent = "0 karakter" }
     function closeAll() { document.querySelectorAll(".modal").forEach(m => m.classList.remove("on")) }
     const modalOpen = () => document.querySelector(".modal.on");
+
+    /* timer mode selection */
+    function setTimerMode(sec) {
+      timerMode = sec;
+      document.querySelectorAll(".tbtn").forEach(b => {
+        const bTime = b.dataset.time;
+        if (bTime === "custom") {
+          b.classList.toggle("active", sec !== 0 && sec !== 10 && sec !== 15 && sec !== 20);
+        } else {
+          b.classList.toggle("active", parseInt(bTime, 10) === sec);
+        }
+      });
+      reset();
+      toast(sec === 0 ? "⏱️ Mode Bebas (Tanpa Timer)" : `⏱️ Timer diatur ke ${sec} detik`);
+    }
+
+    document.querySelectorAll(".tbtn").forEach(b => {
+      b.addEventListener("click", () => {
+        const mode = b.dataset.time;
+        if (mode === "custom") {
+          openTimerModal();
+        } else {
+          setTimerMode(parseInt(mode, 10));
+        }
+      });
+    });
+
+    function openTimerModal() {
+      $("inp-custom-time").value = timerMode > 0 ? timerMode : customTimerVal;
+      $("m-timer").classList.add("on");
+      setTimeout(() => $("inp-custom-time").focus(), 100);
+    }
+
+    $("btn-apply-timer").onclick = () => {
+      const val = parseInt($("inp-custom-time").value, 10);
+      if (isNaN(val) || val < 3 || val > 300) {
+        toast("Masukkan durasi antara 3 sampai 300 detik.");
+        return;
+      }
+      customTimerVal = val;
+      $("btn-custom-time").textContent = val + "s";
+      setTimerMode(val);
+      closeAll();
+    };
 
     $("btn-catalog").onclick = openCatalog;
     $("btn-custom").onclick = openCustom;
