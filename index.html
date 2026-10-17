@@ -1496,7 +1496,7 @@
                 <h3 class="lb-title">Global Ranked Leaderboard</h3>
                 <span class="lb-live-badge"><span class="avatar-dot"></span> Live</span>
               </div>
-              <p class="lb-subtitle">Kata Terpanjang di Dunia: <b>Taumatawhakatangihanga...</b> (85 Huruf · 0 Typo)</p>
+              <p class="lb-subtitle">Kata Terpanjang di Dunia: <b>Taumatawhakatangihanga...</b> (85 Huruf · Semua Valid)</p>
             </div>
           </div>
           <button class="chip-btn" id="btn-refresh-page-lb" title="Segarkan Leaderboard">🔄 Segarkan</button>
@@ -1879,13 +1879,13 @@
         if (pickerEl) pickerEl.style.display = "none";
         if (btnNext) btnNext.style.display = "none";
         if (actionsEl) actionsEl.classList.add("single-btn");
-        if (hintEl) hintEl.innerHTML = "<kbd>Tab</kbd> / <kbd>Enter</kbd> ulangi · 🎯 Mode Ranked Wajib 0 Typo (100% Akurasi)";
+        if (hintEl) hintEl.innerHTML = "<kbd>Tab</kbd> / <kbd>Enter</kbd> ulangi · 🎯 Mode Ranked: 85 Huruf Harus Valid Semua";
 
         if (b) {
           b.className = "ranked-banner is-ranked";
-          let recordText = "Wajib 0 Typo (100% Akurasi) · Skor otomatis masuk Leaderboard Global";
+          let recordText = "Ketik seluruh 85 huruf secara valid (bisa perbaiki typo dengan Backspace) · Masuk Leaderboard Global";
           if (currentUser && userRankedPB) {
-            recordText = `👑 Rekor Terbaik Anda: <b>${userRankedPB.time.toFixed(2)}s</b> (${userRankedPB.cps.toFixed(1)} CPS) · Wajib 0 Typo`;
+            recordText = `👑 Rekor Terbaik Anda: <b>${userRankedPB.time.toFixed(2)}s</b> (${userRankedPB.cps.toFixed(1)} CPS)`;
           }
           b.innerHTML = `
             <div class="ranked-tag">
@@ -1935,49 +1935,7 @@
       }
     }
 
-    function failRankedOnTypo() {
-      if (done) return;
-      clearInterval(timer); timer = null; started = false; done = true;
-      elapsed = (performance.now() - t0) / 1000;
-      const charsTyped = typed.length;
-      const time = elapsed.toFixed(2);
-      const cps = elapsed > 0 ? (charsTyped / elapsed).toFixed(2) : "0.00";
-      const acc = keys > 0 ? Math.max(0, Math.round(((keys - typos) / keys) * 100)) : 0;
 
-      box.classList.remove("success", "finished");
-      box.classList.add("failed");
-      $("result").classList.remove("success");
-      $("result").classList.add("failed", "show");
-
-      $("r-title").textContent = "❌ Gagal: Terjadi Typo!";
-      $("r-pb").hidden = true;
-      $("r-t").textContent = time + "s";
-      $("r-cps").textContent = cps;
-      $("r-wpm").textContent = "0";
-      $("r-acc").textContent = acc + "%";
-      $("r-typo").textContent = typos;
-
-      const rankedBox = $("r-ranked-status");
-      if (rankedBox) {
-        rankedBox.innerHTML = `
-          <div class="r-ranked-box failed-record" style="background:rgba(255,93,108,.12);border-color:rgba(255,93,108,.4)">
-            <b style="color:var(--red);display:block;margin-bottom:4px">⚠️ Mode Ranked Gugur!</b>
-            <div style="font-size:.78rem;color:var(--dim);margin-bottom:8px">
-              Mode Ranked mewajibkan <b>100% akurasi (0 Typo)</b> untuk dapat tercatat di Leaderboard Global.
-            </div>
-            <button class="btn primary sm" id="btn-fail-restart" type="button" style="min-height:36px;font-size:.82rem;width:100%">
-              🔄 Coba Lagi dari Awal (Tab / Enter)
-            </button>
-          </div>
-        `;
-        const btnFailRestart = $("btn-fail-restart");
-        if (btnFailRestart) btnFailRestart.onclick = () => reset(true);
-      }
-
-      inp.blur();
-      toast("❌ Gagal! Mode Ranked tidak boleh ada typo sama sekali. Tekan Tab / Enter untuk ulangi.");
-      setTimeout(() => $("result").scrollIntoView({ behavior: "smooth", block: "center" }), 80);
-    }
 
     function sanitizeUser(u) {
       return (u || "").trim().toLowerCase().replace(/[^a-z0-9_]/g, "");
@@ -2291,7 +2249,7 @@
         }
 
         if (!data || data.length === 0) {
-          const emptyHtml = '<div class="empty">Belum ada pemain di peringkat ini.<br>Jadilah yang pertama menaklukkan kata 85 huruf ini dengan 0 typo!</div>';
+          const emptyHtml = '<div class="empty">Belum ada pemain di peringkat ini.<br>Jadilah yang pertama menaklukkan kata 85 huruf ini!</div>';
           if (listEl) listEl.innerHTML = emptyHtml;
           if (pageListEl) pageListEl.innerHTML = emptyHtml;
           return;
@@ -2552,21 +2510,20 @@
         if (char !== target[typed.length]) {
           typos++;
           click(true);
-          if (target === RANKED_WORD) {
-            typed = v;
-            paint();
-            stats();
-            failRankedOnTypo();
-            return;
-          }
         } else {
           click(false, char);
         }
         typed = v;
         paint();
         stats();
-        // Selesai jika mencapai panjang kata, tetap bisa finish meskipun ada typo
-        if (typed.length >= target.length) finish();
+        // Selesai jika mencapai panjang kata dan seluruh huruf valid
+        if (typed.length >= target.length) {
+          if (typed === target) {
+            finish();
+          } else {
+            toast("⚠️ Masih ada huruf yang salah! Hapus (Backspace) dan perbaiki hingga semua valid.");
+          }
+        }
       }
     });
     function start() {
@@ -2637,8 +2594,8 @@
       history_();
       setTimeout(() => $("result").scrollIntoView({ behavior: "smooth", block: "center" }), 80);
 
-      // Ranked Mode check (Taumatawhaka... completed with 0 typos)
-      const isRanked = (target === RANKED_WORD) && (charsTyped === target.length) && (typos === 0);
+      // Ranked Mode check (Taumatawhaka... completed with all letters valid)
+      const isRanked = (target === RANKED_WORD) && (typed === target);
       const rankedBox = $("r-ranked-status");
       if (rankedBox) {
         if (isRanked) {
