@@ -1296,7 +1296,7 @@
     let timerMode = 0; // 0 = Bebas / Tanpa Timer (default), 10, 15, 20, atau custom
     let customTimerVal = 30;
 
-    function setTarget(w) {
+    function setTarget(w, autoFocus = false) {
       target = w.trim().toLowerCase();
       $("info-len").textContent = target.length + " huruf";
       const p = PRESETS.find(x => x.w === target);
@@ -1305,10 +1305,10 @@
       $("info-pb").textContent = pb ? `👑 Rekor ${pb.time.toFixed(2)}s · ${pb.cps.toFixed(1)} cps` : "";
       inp.maxLength = target.length;
       document.querySelectorAll(".chip").forEach((c, i) => c.classList.toggle("active", PRESETS[i].w === target));
-      reset();
+      reset(autoFocus);
     }
     let lastKeyTime = 0;
-    function reset() {
+    function reset(autoFocus = false) {
       clearInterval(timer); timer = null;
       started = done = false; elapsed = typos = keys = 0; typed = ""; inp.value = ""; lastKeyTime = 0;
       if (timerMode > 0) {
@@ -1321,7 +1321,17 @@
       $("cps").textContent = "0.0"; $("wpm").textContent = "0";
       $("prog").textContent = "0/" + target.length; $("acc").textContent = "100%"; $("bar").style.width = "0";
       box.classList.remove("success", "finished"); $("result").classList.remove("show");
-      render(); focusBox(false);
+      render();
+      if (autoFocus) {
+        focusBox(true);
+      } else {
+        blurBox();
+      }
+    }
+    function blurBox() {
+      try { inp.blur() } catch { }
+      cover.classList.add("on");
+      box.classList.remove("focused");
     }
     function render() {
       box.querySelectorAll(".ch").forEach(n => n.remove());
@@ -1672,7 +1682,7 @@
     $("btn-catalog").onclick = openCatalog;
     $("btn-custom").onclick = openCustom;
     $("btn-random").onclick = $("btn-next").onclick = randomWord;
-    $("btn-restart").onclick = () => { reset(); focusBox(true); };
+    $("btn-restart").onclick = () => { reset(true); };
     document.querySelectorAll("[data-close]").forEach(b => b.onclick = closeAll);
     document.querySelectorAll(".modal").forEach(m => m.addEventListener("click", e => { if (e.target === m) closeAll() }));
     $("q").addEventListener("input", debounce(fillCatalog, 200));
@@ -1685,7 +1695,7 @@
     $("btn-apply").onclick = () => {
       const v = $("custom").value.trim().toLowerCase().replace(/\s+/g, "");
       if (v.length < 10) { toast("Minimal 10 huruf."); return }
-      setTarget(v); closeAll(); toast(`✅ Kata ${v.length} huruf siap dilatih`);
+      setTarget(v, false); closeAll(); toast(`✅ Kata ${v.length} huruf siap dilatih`);
     };
     $("btn-copy").onclick = () => {
       (navigator.clipboard ? navigator.clipboard.writeText(target) : Promise.reject()).then(() => toast("📋 Kata disalin")).catch(() => toast("Gagal menyalin"));
@@ -1697,14 +1707,14 @@
     document.addEventListener("keydown", e => {
       if (e.key === "Escape") { modalOpen() ? closeAll() : openCatalog(); return }
       if (modalOpen()) return;
-      if (e.key === "Tab" || (done && e.key === "Enter")) { e.preventDefault(); reset() }
+      if (e.key === "Tab" || (done && e.key === "Enter")) { e.preventDefault(); reset(true) }
       else if (!done && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey && document.activeElement !== inp) focusBox();
     });
 
     /* init */
     if (store.get(SND_KEY) !== null) sound = store.get(SND_KEY) === "1";
     sndUI();
-    setTarget(target);
+    setTarget(target, false);
   </script>
 </body>
 
