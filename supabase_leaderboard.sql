@@ -46,3 +46,11 @@ CREATE POLICY "Allow user update own score"
     ON public.ranked_leaderboard
     FOR UPDATE
     USING (auth.uid() = user_id);
+
+-- 7. Policy: User yang login dapat menghapus rekor sendiri
+DROP POLICY IF EXISTS "Allow user delete own score" ON public.ranked_leaderboard;
+CREATE POLICY "Allow user delete own score"
+    ON public.ranked_leaderboard
+    FOR DELETE
+    USING (auth.uid() = user_id);
+

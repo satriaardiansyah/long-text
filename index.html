@@ -1520,7 +1520,10 @@
             <span style="font-size:.72rem;color:var(--dim);display:block">Rekor Terbaik Anda:</span>
             <strong id="page-lb-my-score" style="color:var(--gold)">-</strong>
           </div>
-          <span id="page-lb-my-rank" class="chip-btn gold" style="min-height:28px;font-size:.76rem">#?</span>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span id="page-lb-my-rank" class="chip-btn gold" style="min-height:28px;font-size:.76rem">#?</span>
+            <button class="chip-btn" id="btn-delete-page-lb-row" type="button" style="min-height:28px;padding:0 8px;font-size:.72rem;color:var(--red);border-color:rgba(255,93,108,.35)" title="Hapus rekor ranked saya">🗑️ Hapus</button>
+          </div>
         </div>
       </section>
     </main>
@@ -1618,7 +1621,10 @@
             <span style="font-size:.72rem;color:var(--dim);display:block">Rekor Anda Saat Ini:</span>
             <strong id="lb-my-score" style="color:var(--gold)">-</strong>
           </div>
-          <span id="lb-my-rank" class="chip-btn" style="min-height:28px;font-size:.76rem">#?</span>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span id="lb-my-rank" class="chip-btn" style="min-height:28px;font-size:.76rem">#?</span>
+            <button class="chip-btn" id="btn-delete-modal-lb-row" type="button" style="min-height:28px;padding:0 8px;font-size:.72rem;color:var(--red);border-color:rgba(255,93,108,.35)" title="Hapus rekor ranked saya">🗑️ Hapus</button>
+          </div>
         </div>
       </div>
     </div>
@@ -1682,7 +1688,10 @@
         </div>
 
         <div style="background:var(--s2);border:1px solid var(--line);border-radius:14px;padding:12px">
-          <span style="font-size:.76rem;color:var(--dim);display:block;margin-bottom:8px">👑 Rekor Ranked Dunia Anda (Taumatawhaka...):</span>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <span style="font-size:.76rem;color:var(--dim)">👑 Rekor Ranked Dunia Anda (Taumatawhaka...):</span>
+            <button class="chip-btn" id="btn-delete-ranked-pb" type="button" style="min-height:26px;padding:0 8px;font-size:.72rem;color:var(--red);border-color:rgba(255,93,108,.35)" title="Hapus rekor ranked dari leaderboard" hidden>🗑️ Hapus Rekor</button>
+          </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="user-stats-grid">
             <div style="background:var(--s1);padding:8px 10px;border-radius:10px;border:1px solid var(--line)">
               <span style="font-size:.7rem;color:var(--mute)">Waktu Terbaik</span>
@@ -1699,6 +1708,28 @@
           <button class="btn primary" id="btn-profile-to-ranked">⚡ Mainkan Kata Ranked</button>
           <button class="btn" id="btn-profile-to-lb">🏆 Buka Leaderboard Global</button>
           <button class="btn" id="btn-logout" style="color:var(--red);border-color:rgba(255,93,108,.3)">🚪 Keluar Akun</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Konfirmasi Hapus Rekor (Menggantikan native browser confirm) -->
+  <div class="modal" id="m-confirm" role="dialog" aria-modal="true">
+    <div class="sheet" style="max-width:440px">
+      <div class="sh">
+        <span style="color:var(--red);display:flex;align-items:center;gap:6px">⚠️ Konfirmasi Hapus</span>
+        <button class="icon-btn" data-close aria-label="Tutup">✕</button>
+      </div>
+      <div class="sb" style="display:flex;flex-direction:column;gap:12px;padding:16px">
+        <div style="font-size:.92rem;color:var(--text);line-height:1.5">
+          Apakah Anda yakin ingin <b>menghapus rekor Mode Ranked</b> Anda dari Leaderboard Global?
+        </div>
+        <div style="font-size:.78rem;color:var(--dim);line-height:1.4;background:rgba(255,93,108,.08);border:1px solid rgba(255,93,108,.25);padding:10px 12px;border-radius:10px">
+          Tindakan ini permanen. Nama dan catatan waktu Anda akan dihapus dari papan peringkat.
+        </div>
+        <div style="display:flex;gap:8px;margin-top:6px">
+          <button class="btn" data-close style="flex:1" type="button">Batal</button>
+          <button class="btn" id="btn-confirm-delete-action" style="flex:1.2;background:rgba(255,93,108,.2);border-color:rgba(255,93,108,.6);color:var(--red);font-weight:700" type="button">🗑️ Ya, Hapus</button>
         </div>
       </div>
     </div>
@@ -1884,8 +1915,10 @@
         if (b) {
           b.className = "ranked-banner is-ranked";
           let recordText = "Ketik seluruh 85 huruf secara valid (bisa perbaiki typo dengan Backspace) · Masuk Leaderboard Global";
+          let deleteBtnHtml = "";
           if (currentUser && userRankedPB) {
             recordText = `👑 Rekor Terbaik Anda: <b>${userRankedPB.time.toFixed(2)}s</b> (${userRankedPB.cps.toFixed(1)} CPS)`;
+            deleteBtnHtml = `<button class="chip-btn" id="btn-banner-delete-pb" type="button" style="min-height:34px;font-size:.78rem;color:var(--red);border-color:rgba(255,93,108,.35)" title="Hapus rekor ranked Anda">🗑️ Hapus Rekor</button>`;
           }
           b.innerHTML = `
             <div class="ranked-tag">
@@ -1895,13 +1928,16 @@
                 <span style="font-size:.72rem;color:var(--dim)">${recordText}</span>
               </div>
             </div>
-            <div style="display:flex;align-items:center;gap:6px">
+            <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
               <button class="chip-btn gold" id="btn-banner-lb" type="button" style="min-height:34px;font-size:.78rem">🏆 Leaderboard</button>
+              ${deleteBtnHtml}
               <button class="chip-btn" id="btn-exit-ranked" type="button" style="min-height:34px;font-size:.78rem" title="Keluar ke mode latihan bebas untuk memilih kata lain">⚡ Mode Bebas</button>
             </div>
           `;
           const btnLb = $("btn-banner-lb");
           if (btnLb) btnLb.onclick = openLeaderboard;
+          const btnDel = $("btn-banner-delete-pb");
+          if (btnDel) btnDel.onclick = promptDeleteRankedRecord;
           const btnExit = $("btn-exit-ranked");
           if (btnExit) btnExit.onclick = () => {
             setTarget(PRESETS[1].w, true);
@@ -2159,13 +2195,76 @@
           };
           $("user-pb-time").textContent = userRankedPB.time.toFixed(2) + "s";
           $("user-pb-cps").textContent = userRankedPB.cps.toFixed(1) + " cps";
+          if ($("btn-delete-ranked-pb")) $("btn-delete-ranked-pb").hidden = false;
         } else {
           userRankedPB = null;
           $("user-pb-time").textContent = "-";
           $("user-pb-cps").textContent = "-";
+          if ($("btn-delete-ranked-pb")) $("btn-delete-ranked-pb").hidden = true;
         }
       } catch (e) {
         console.warn("fetchUserRankedPB error", e);
+      }
+    }
+
+    function promptDeleteRankedRecord() {
+      if (!sb || !currentUser) {
+        toast("Silakan login terlebih dahulu.");
+        return;
+      }
+      if (!userRankedPB) {
+        toast("Anda belum memiliki rekor di Mode Ranked.");
+        return;
+      }
+      closeAll();
+      $("m-confirm").classList.add("on");
+    }
+
+    async function executeDeleteRankedRecord() {
+      if (!sb || !currentUser) return;
+      const btn = $("btn-confirm-delete-action");
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = "Menghapus...";
+      }
+
+      try {
+        const { error } = await sb
+          .from("ranked_leaderboard")
+          .delete()
+          .eq("user_id", currentUser.id);
+
+        if (error) {
+          console.error("Gagal menghapus rekor:", error);
+          toast("Gagal menghapus rekor: " + error.message);
+          return;
+        }
+
+        userRankedPB = null;
+        $("user-pb-time").textContent = "-";
+        $("user-pb-cps").textContent = "-";
+        if ($("btn-delete-ranked-pb")) $("btn-delete-ranked-pb").hidden = true;
+
+        // Bersihkan juga local PB untuk kata ranked
+        const all = pbs();
+        if (all[RANKED_WORD]) {
+          delete all[RANKED_WORD];
+          store.set(PB_KEY, JSON.stringify(all));
+          $("info-pb").textContent = "Rekor -";
+        }
+
+        closeAll();
+        updateRankedBanner();
+        loadLeaderboard();
+        toast("🗑️ Rekor ranked Anda berhasil dihapus!");
+      } catch (err) {
+        console.error("Delete record err:", err);
+        toast("Terjadi kesalahan saat menghapus rekor.");
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = "🗑️ Ya, Hapus";
+        }
       }
     }
 
@@ -2782,6 +2881,10 @@
       loadLeaderboard();
       toast("🔄 Leaderboard diperbarui!");
     };
+    if ($("btn-delete-ranked-pb")) $("btn-delete-ranked-pb").onclick = promptDeleteRankedRecord;
+    if ($("btn-delete-page-lb-row")) $("btn-delete-page-lb-row").onclick = promptDeleteRankedRecord;
+    if ($("btn-delete-modal-lb-row")) $("btn-delete-modal-lb-row").onclick = promptDeleteRankedRecord;
+    if ($("btn-confirm-delete-action")) $("btn-confirm-delete-action").onclick = executeDeleteRankedRecord;
     $("btn-jump-ranked").onclick = () => { setTarget(RANKED_WORD, true); closeAll(); };
     $("btn-auth-trigger").onclick = () => { currentUser ? openUserModal() : openAuth("login"); };
     $("ranked-tag-action").onclick = () => {
@@ -2808,6 +2911,11 @@
         } else {
           openCatalog();
         }
+        return;
+      }
+      if ($("m-confirm") && $("m-confirm").classList.contains("on") && e.key === "Enter") {
+        e.preventDefault();
+        executeDeleteRankedRecord();
         return;
       }
       if (modalOpen()) return;
