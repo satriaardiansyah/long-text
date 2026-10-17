@@ -524,9 +524,34 @@
     }
 
     .actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .actions .btn {
+      flex: 1;
+    }
+
+    .actions.single-btn {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      max-width: 320px;
+      margin: 0 auto;
+    }
+
+    .actions.single-btn .btn {
+      flex: 1 1 100%;
+      width: 100%;
+      max-width: 320px;
+      margin: 0 auto;
+      text-align: center;
+      justify-content: center;
     }
 
     .btn {
@@ -949,7 +974,18 @@
       .actions {
         max-width: 420px;
         margin: 0 auto;
-        width: 100%
+        width: 100%;
+      }
+
+      .actions.single-btn {
+        max-width: 320px;
+        margin: 0 auto;
+      }
+
+      .actions.single-btn .btn {
+        flex: 1 1 100%;
+        max-width: 320px;
+        margin: 0 auto;
       }
     }
 
@@ -990,20 +1026,375 @@
       }
     }
 
-    @media (prefers-reduced-motion:reduce) {
-      * {
-        animation: none !important;
-        transition: none !important
+    /* Top actions & auth button */
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .chip-btn.gold {
+      background: rgba(245, 197, 66, .14);
+      border-color: rgba(245, 197, 66, .35);
+      color: var(--gold);
+    }
+    .chip-btn.gold:hover {
+      background: rgba(245, 197, 66, .22);
+    }
+    .chip-btn.logged-in {
+      border-color: rgba(94, 234, 212, .4);
+      color: var(--mint);
+    }
+    .avatar-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--mint);
+      box-shadow: 0 0 6px var(--mint);
+    }
+    @media (max-width: 440px) {
+      .hide-xs {
+        display: none;
+      }
+      .lb-item {
+        grid-template-columns: 36px 1fr 66px 44px;
+        font-size: .78rem;
+        padding: 8px 10px;
+      }
+      .lb-item > span:nth-child(5) {
+        display: none;
       }
     }
+
+    /* Ranked Mode Banner */
+    .ranked-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid var(--line);
+      font-size: .82rem;
+      color: var(--dim);
+      transition: all .25s ease;
+    }
+    .ranked-banner.is-ranked {
+      background: linear-gradient(90deg, rgba(245, 197, 66, .14), rgba(94, 234, 212, .08));
+      border-color: rgba(245, 197, 66, .4);
+      color: var(--text);
+    }
+    .ranked-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 700;
+      font-size: .78rem;
+    }
+    .ranked-banner.is-ranked .ranked-tag {
+      color: var(--gold);
+    }
+    .ranked-link {
+      color: var(--gold);
+      font-weight: 600;
+      font-size: .78rem;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      cursor: pointer;
+      background: none;
+      border: 0;
+      padding: 0;
+    }
+    .ranked-link:hover {
+      color: #fff;
+    }
+    .ranked-chip {
+      border-color: rgba(245, 197, 66, .4) !important;
+      background: rgba(245, 197, 66, .08) !important;
+      color: var(--gold) !important;
+    }
+
+    /* Leaderboard Modal */
+    .lb-header-info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: rgba(245, 197, 66, .08);
+      border: 1px solid rgba(245, 197, 66, .25);
+      border-radius: 12px;
+      font-size: .82rem;
+      gap: 10px;
+    }
+    .lb-shortcut {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 12px;
+      background: rgba(94, 234, 212, .08);
+      border: 1px solid rgba(94, 234, 212, .25);
+      border-radius: 10px;
+      font-size: .78rem;
+      color: var(--mint);
+    }
+    .lb-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 6px;
+      max-height: 52vh;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding-right: 2px;
+    }
+    .lb-item {
+      display: grid;
+      grid-template-columns: 42px 1fr 74px 50px 46px;
+      align-items: center;
+      padding: 9px 12px;
+      background: var(--s2);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      font-size: .82rem;
+      font-family: var(--mono);
+      gap: 4px;
+    }
+    .lb-item.header {
+      background: transparent;
+      border-color: transparent;
+      color: var(--mute);
+      font-size: .7rem;
+      font-family: var(--sans);
+      font-weight: 600;
+      padding: 4px 12px;
+    }
+    .lb-item.top-1 {
+      background: linear-gradient(90deg, rgba(245, 197, 66, .18), var(--s2));
+      border-color: rgba(245, 197, 66, .5);
+    }
+    .lb-item.top-2 {
+      background: linear-gradient(90deg, rgba(220, 225, 235, .12), var(--s2));
+      border-color: rgba(220, 225, 235, .3);
+    }
+    .lb-item.top-3 {
+      background: linear-gradient(90deg, rgba(217, 119, 6, .14), var(--s2));
+      border-color: rgba(217, 119, 6, .35);
+    }
+    .lb-item.is-me {
+      border-color: var(--mint);
+      box-shadow: inset 0 0 0 1px var(--mint);
+    }
+    .lb-pos {
+      font-weight: 800;
+      font-size: .84rem;
+    }
+    .lb-name {
+      font-family: var(--sans);
+      font-weight: 600;
+      color: var(--text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .lb-name .me-badge {
+      font-size: .62rem;
+      background: var(--mint);
+      color: #0b2520;
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+    .lb-time {
+      text-align: right;
+      font-weight: 700;
+      color: var(--gold);
+    }
+    .lb-cps, .lb-acc {
+      text-align: right;
+      color: var(--dim);
+    }
+    .lb-footer-me {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      margin-top: 10px;
+      background: var(--s2);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      font-size: .84rem;
+    }
+
+    /* Auth Modal */
+    .auth-nav {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      background: var(--s2);
+      padding: 4px;
+      border-radius: 12px;
+      margin-bottom: 6px;
+    }
+    .auth-tab-btn {
+      padding: 9px;
+      border-radius: 9px;
+      font-size: .86rem;
+      font-weight: 600;
+      color: var(--dim);
+      text-align: center;
+      transition: all .2s;
+    }
+    .auth-tab-btn.active {
+      background: var(--s1);
+      color: var(--gold);
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .form-label {
+      font-size: .78rem;
+      font-weight: 600;
+      color: var(--dim);
+    }
+    .auth-alert {
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: .82rem;
+      display: none;
+      line-height: 1.4;
+    }
+    .auth-alert.error {
+      display: block;
+      background: rgba(255, 93, 108, .12);
+      border: 1px solid rgba(255, 93, 108, .3);
+      color: var(--red);
+    }
+    .auth-alert.info {
+      display: block;
+      background: rgba(94, 234, 212, .1);
+      border: 1px solid rgba(94, 234, 212, .3);
+      color: var(--mint);
+    }
+
+    /* Result Ranked Box */
+    .r-ranked-box {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: var(--s2);
+      border: 1px solid var(--line);
+      font-size: .84rem;
+      line-height: 1.4;
+    }
+    .r-ranked-box.new-record {
+      background: linear-gradient(135deg, rgba(245, 197, 66, .16), rgba(94, 234, 212, .1));
+      border-color: rgba(245, 197, 66, .45);
+    }
+    .box.failed {
+      border-color: rgba(255, 93, 108, .75) !important;
+      background: rgba(255, 93, 108, .07) !important;
+      box-shadow: 0 0 24px rgba(255, 93, 108, .25);
+      animation: shake .34s cubic-bezier(.36,.07,.19,.97) both;
+    }
+    .result.failed {
+      border-color: rgba(255, 93, 108, .5) !important;
+      background: linear-gradient(160deg, rgba(255, 93, 108, .14), rgba(16, 19, 28, .85)) !important;
+    }
+    @keyframes shake {
+      10%, 90% { transform: translate3d(-1px, 0, 0); }
+      20%, 80% { transform: translate3d(2px, 0, 0); }
+      30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+      40%, 60% { transform: translate3d(4px, 0, 0); }
+    }
+
+    /* Leaderboard on page */
+    .lb-card {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 6px;
+      border: 1px solid rgba(245, 197, 66, .25);
+      background: linear-gradient(180deg, rgba(245, 197, 66, .05), var(--s1) 22%);
+      scroll-margin-top: 70px;
+    }
+    .lb-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .lb-card-title-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .lb-trophy-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(245, 197, 66, .14);
+      border: 1px solid rgba(245, 197, 66, .35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      flex-shrink: 0;
+    }
+    .lb-heading-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .lb-title {
+      font-size: 1.08rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -.01em;
+      margin: 0;
+    }
+    .lb-live-badge {
+      font-size: .66rem;
+      font-weight: 700;
+      color: var(--mint);
+      background: rgba(94, 234, 212, .1);
+      border: 1px solid rgba(94, 234, 212, .25);
+      padding: 2px 7px;
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .lb-subtitle {
+      font-size: .78rem;
+      color: var(--dim);
+      margin-top: 2px;
+    }
+    .lb-card .lb-list {
+      max-height: none;
+      overflow-y: visible;
+    }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
   <div class="top">
     <div class="wrap">
       <div class="brand">Long Text<small>Speed drill kata panjang</small></div>
-      <button class="chip-btn on" id="btn-sound" aria-label="Suara ketik">🔊 <span id="snd">Aktif</span></button>
+      <div class="top-actions">
+        <button class="chip-btn gold" id="btn-open-lb" title="Lihat Papan Peringkat Global">🏆 <span class="hide-xs">Ranked</span></button>
+        <button class="chip-btn" id="btn-auth-trigger" title="Masuk / Daftar Akun">👤 <span id="auth-btn-label">Masuk</span></button>
+        <button class="chip-btn on" id="btn-sound" aria-label="Suara ketik">🔊 <span id="snd">Aktif</span></button>
+      </div>
     </div>
   </div>
 
@@ -1028,6 +1419,14 @@
           <button class="icon-btn" id="btn-copy" aria-label="Salin kata">📋</button>
         </div>
       </section>
+
+      <div class="ranked-banner is-ranked" id="ranked-banner">
+        <div class="ranked-tag">
+          <span id="ranked-tag-icon">🏆</span>
+          <span id="ranked-tag-text">Mode Ranked Aktif (Kata Terpanjang 85 Huruf)</span>
+        </div>
+        <button class="ranked-link" id="ranked-tag-action" type="button">Lihat Leaderboard &rarr;</button>
+      </div>
 
       <section class="card arena">
         <div class="timer-bar">
@@ -1069,13 +1468,14 @@
             <div class="rc"><span>Akurasi</span><strong id="r-acc">100%</strong></div>
             <div class="rc"><span>Typo</span><strong id="r-typo">0</strong></div>
           </div>
+          <div id="r-ranked-status"></div>
         </div>
 
         <div class="actions">
           <button class="btn primary" id="btn-restart">🔄 Ulangi</button>
           <button class="btn" id="btn-next">🎲 Kata lain</button>
         </div>
-        <p class="hint"><kbd>Tab</kbd> / <kbd>Enter</kbd> ulangi · <kbd>Esc</kbd> pilih kata</p>
+        <p class="hint" id="hint-text"><kbd>Tab</kbd> / <kbd>Enter</kbd> ulangi · <kbd>Esc</kbd> pilih kata</p>
       </section>
 
       <section class="card history" id="history" hidden>
@@ -1084,6 +1484,44 @@
         <div class="hrow head"><span>#</span><span>Waktu</span><span>CPS</span><span>WPM</span><span>Akurasi</span>
         </div>
         <div id="hbody"></div>
+      </section>
+
+      <!-- Global Ranked Leaderboard Section (Langsung terlihat di bawah) -->
+      <section class="card lb-card" id="section-leaderboard">
+        <div class="lb-card-top">
+          <div class="lb-card-title-group">
+            <div class="lb-trophy-badge">🏆</div>
+            <div>
+              <div class="lb-heading-row">
+                <h3 class="lb-title">Global Ranked Leaderboard</h3>
+                <span class="lb-live-badge"><span class="avatar-dot"></span> Live</span>
+              </div>
+              <p class="lb-subtitle">Kata Terpanjang di Dunia: <b>Taumatawhakatangihanga...</b> (85 Huruf · 0 Typo)</p>
+            </div>
+          </div>
+          <button class="chip-btn" id="btn-refresh-page-lb" title="Segarkan Leaderboard">🔄 Segarkan</button>
+        </div>
+
+        <div class="lb-table-wrapper">
+          <div class="lb-item header">
+            <span>#</span>
+            <span>Pemain</span>
+            <span style="text-align:right">Waktu</span>
+            <span style="text-align:right">CPS</span>
+            <span style="text-align:right">Ak.</span>
+          </div>
+          <div class="lb-list" id="page-lb-list">
+            <div class="empty">Memuat papan peringkat...</div>
+          </div>
+        </div>
+
+        <div id="page-lb-user-footer" class="lb-footer-me" hidden>
+          <div>
+            <span style="font-size:.72rem;color:var(--dim);display:block">Rekor Terbaik Anda:</span>
+            <strong id="page-lb-my-score" style="color:var(--gold)">-</strong>
+          </div>
+          <span id="page-lb-my-rank" class="chip-btn gold" style="min-height:28px;font-size:.76rem">#?</span>
+        </div>
       </section>
     </main>
   </div>
@@ -1141,6 +1579,131 @@
     </div>
   </div>
 
+  <!-- Modal Leaderboard Global -->
+  <div class="modal" id="m-leaderboard" role="dialog" aria-modal="true">
+    <div class="sheet">
+      <div class="sh">
+        <span>🏆 Ranked Leaderboard</span>
+        <button class="icon-btn" data-close aria-label="Tutup">✕</button>
+      </div>
+      <div class="sb">
+        <div class="lb-header-info">
+          <div>
+            <b style="color:var(--gold)">Taumatawhakatangihanga...</b>
+            <div style="font-size:.72rem;color:var(--dim)">Kata Terpanjang di Dunia · 85 Huruf</div>
+          </div>
+          <button class="chip-btn" id="btn-refresh-lb" style="min-height:32px;font-size:.76rem">🔄 Segarkan</button>
+        </div>
+
+        <div id="lb-target-shortcut" class="lb-shortcut" hidden>
+          <span>🎯 Anda sedang tidak di kata Ranked ini.</span>
+          <button class="btn primary sm" id="btn-jump-ranked" style="min-height:30px;padding:0 10px;font-size:.76rem">Mainkan</button>
+        </div>
+
+        <div id="lb-content">
+          <div class="lb-item header">
+            <span>#</span>
+            <span>Pemain</span>
+            <span style="text-align:right">Waktu</span>
+            <span style="text-align:right">CPS</span>
+            <span style="text-align:right">Ak.</span>
+          </div>
+          <div class="lb-list" id="lb-list">
+            <div class="empty">Memuat papan peringkat...</div>
+          </div>
+        </div>
+
+        <div id="lb-user-footer" class="lb-footer-me" hidden>
+          <div>
+            <span style="font-size:.72rem;color:var(--dim);display:block">Rekor Anda Saat Ini:</span>
+            <strong id="lb-my-score" style="color:var(--gold)">-</strong>
+          </div>
+          <span id="lb-my-rank" class="chip-btn" style="min-height:28px;font-size:.76rem">#?</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Auth (Username & Password) -->
+  <div class="modal" id="m-auth" role="dialog" aria-modal="true">
+    <div class="sheet">
+      <div class="sh">
+        <span id="auth-modal-title">Masuk ke Akun</span>
+        <button class="icon-btn" data-close aria-label="Tutup">✕</button>
+      </div>
+      <div class="sb">
+        <div class="auth-nav">
+          <button class="auth-tab-btn active" id="tab-login" type="button">Masuk</button>
+          <button class="auth-tab-btn" id="tab-register" type="button">Daftar Baru</button>
+        </div>
+
+        <div class="auth-alert" id="auth-alert"></div>
+
+        <form id="auth-form" onsubmit="return false;" style="display:flex;flex-direction:column;gap:12px">
+          <div class="form-group">
+            <label class="form-label" for="auth-username">Username</label>
+            <input class="field" id="auth-username" type="text" placeholder="Masukkan username" autocomplete="username" autocapitalize="none" required />
+            <span style="font-size:.7rem;color:var(--mute)">Hanya huruf, angka, dan garis bawah (3-20 karakter).</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="auth-password">Password</label>
+            <input class="field" id="auth-password" type="password" placeholder="Minimal 6 karakter" autocomplete="current-password" required />
+          </div>
+
+          <button class="btn primary" id="btn-auth-submit" type="submit" style="margin-top:4px">
+            <span id="auth-submit-text">Masuk</span>
+          </button>
+        </form>
+
+        <p style="font-size:.74rem;color:var(--dim);text-align:center;line-height:1.4">
+          🔐 Username Anda akan tercatat secara publik di Leaderboard Global saat menyelesaikan kata monster.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Info Akun User -->
+  <div class="modal" id="m-user" role="dialog" aria-modal="true">
+    <div class="sheet">
+      <div class="sh">
+        <span>Profil Pemain</span>
+        <button class="icon-btn" data-close aria-label="Tutup">✕</button>
+      </div>
+      <div class="sb">
+        <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--s2);border:1px solid var(--line);border-radius:14px">
+          <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,197,66,.18);border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:800;color:var(--gold)" id="user-avatar-initial">?</div>
+          <div>
+            <strong id="user-profile-name" style="font-size:1.05rem;display:block">-</strong>
+            <span style="font-size:.74rem;color:var(--mint);display:flex;align-items:center;gap:4px">
+              <span class="avatar-dot"></span> Online & Terhubung
+            </span>
+          </div>
+        </div>
+
+        <div style="background:var(--s2);border:1px solid var(--line);border-radius:14px;padding:12px">
+          <span style="font-size:.76rem;color:var(--dim);display:block;margin-bottom:8px">👑 Rekor Ranked Dunia Anda (Taumatawhaka...):</span>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px" id="user-stats-grid">
+            <div style="background:var(--s1);padding:8px 10px;border-radius:10px;border:1px solid var(--line)">
+              <span style="font-size:.7rem;color:var(--mute)">Waktu Terbaik</span>
+              <strong style="display:block;color:var(--gold);font-size:1.05rem" id="user-pb-time">-</strong>
+            </div>
+            <div style="background:var(--s1);padding:8px 10px;border-radius:10px;border:1px solid var(--line)">
+              <span style="font-size:.7rem;color:var(--mute)">Kecepatan (CPS)</span>
+              <strong style="display:block;font-size:1.05rem" id="user-pb-cps">-</strong>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px">
+          <button class="btn primary" id="btn-profile-to-ranked">⚡ Mainkan Kata Ranked</button>
+          <button class="btn" id="btn-profile-to-lb">🏆 Buka Leaderboard Global</button>
+          <button class="btn" id="btn-logout" style="color:var(--red);border-color:rgba(255,93,108,.3)">🚪 Keluar Akun</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="toast" role="status"></div>
 
   <script>
@@ -1158,6 +1721,17 @@
     ];
     const $ = id => document.getElementById(id);
     const PB_KEY = "sambung_kata_long_words_pb", SND_KEY = "sambung_kata_typing_sound";
+
+    /* Supabase & Ranked Configuration */
+    const SUPABASE_URL = "https://wlyiifkoeoqzejqkzatp.supabase.co";
+    const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndseWlpZmtvZW9xemVqcWt6YXRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4OTEwMDQsImV4cCI6MjEwNzQ2NzAwNH0.PI6GJmkJuEtv9ekQZyyPNaoYVADyNmkWDTkpj7jBfxc";
+    const sb = (window.supabase && window.supabase.createClient) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON) : null;
+    const RANKED_WORD = PRESETS[0].w;
+    let currentUser = null;
+    let userRankedPB = null;
+    let pendingRankedScore = null;
+    let authMode = "login";
+
     let target = PRESETS[0].w, typed = "", started = false, done = false, t0 = 0, timer = null, elapsed = 0, typos = 0, keys = 0, attempts = [], sound = true, db = null;
     const box = $("box"), inp = $("inp"), cover = $("cover");
 
@@ -1292,6 +1866,485 @@
 
     function toast(m) { const t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove("show"), 2400) }
 
+    /* Ranked & Auth Helpers */
+    function updateRankedBanner() {
+      const isRanked = (target === RANKED_WORD);
+      const b = $("ranked-banner");
+      const pickerEl = document.querySelector(".picker");
+      const btnNext = $("btn-next");
+      const actionsEl = document.querySelector(".actions");
+      const hintEl = $("hint-text");
+
+      if (isRanked) {
+        if (pickerEl) pickerEl.style.display = "none";
+        if (btnNext) btnNext.style.display = "none";
+        if (actionsEl) actionsEl.classList.add("single-btn");
+        if (hintEl) hintEl.innerHTML = "<kbd>Tab</kbd> / <kbd>Enter</kbd> ulangi · 🎯 Mode Ranked Wajib 0 Typo (100% Akurasi)";
+
+        if (b) {
+          b.className = "ranked-banner is-ranked";
+          let recordText = "Wajib 0 Typo (100% Akurasi) · Skor otomatis masuk Leaderboard Global";
+          if (currentUser && userRankedPB) {
+            recordText = `👑 Rekor Terbaik Anda: <b>${userRankedPB.time.toFixed(2)}s</b> (${userRankedPB.cps.toFixed(1)} CPS) · Wajib 0 Typo`;
+          }
+          b.innerHTML = `
+            <div class="ranked-tag">
+              <span style="font-size:1.25rem">🏆</span>
+              <div>
+                <b style="color:var(--gold);display:block;font-size:.88rem">Mode Ranked: Fokus Penuh (85 Huruf)</b>
+                <span style="font-size:.72rem;color:var(--dim)">${recordText}</span>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px">
+              <button class="chip-btn gold" id="btn-banner-lb" type="button" style="min-height:34px;font-size:.78rem">🏆 Leaderboard</button>
+              <button class="chip-btn" id="btn-exit-ranked" type="button" style="min-height:34px;font-size:.78rem" title="Keluar ke mode latihan bebas untuk memilih kata lain">⚡ Mode Bebas</button>
+            </div>
+          `;
+          const btnLb = $("btn-banner-lb");
+          if (btnLb) btnLb.onclick = openLeaderboard;
+          const btnExit = $("btn-exit-ranked");
+          if (btnExit) btnExit.onclick = () => {
+            setTarget(PRESETS[1].w, true);
+            toast("🔓 Beralih ke Mode Latihan Bebas");
+          };
+        }
+      } else {
+        if (pickerEl) pickerEl.style.display = "";
+        if (btnNext) btnNext.style.display = "";
+        if (actionsEl) actionsEl.classList.remove("single-btn");
+        if (hintEl) hintEl.innerHTML = "<kbd>Tab</kbd> / <kbd>Enter</kbd> ulangi · <kbd>Esc</kbd> pilih kata";
+
+        if (b) {
+          b.className = "ranked-banner";
+          b.innerHTML = `
+            <div class="ranked-tag">
+              <span style="font-size:1.2rem">⚡</span>
+              <div>
+                <b style="display:block;font-size:.86rem">Mode Latihan Bebas (Unranked)</b>
+                <span style="font-size:.72rem;color:var(--dim)">Ketik santai kata KBBI atau pilih kata sendiri</span>
+              </div>
+            </div>
+            <button class="chip-btn gold" id="btn-enter-ranked" type="button" style="min-height:34px;font-size:.78rem">🏆 Masuk Ranked (85 Huruf)</button>
+          `;
+          const btnEnter = $("btn-enter-ranked");
+          if (btnEnter) btnEnter.onclick = () => {
+            setTarget(RANKED_WORD, true);
+            toast("🏆 Masuk ke Mode Ranked: Taumatawhakatangihanga...!");
+          };
+        }
+      }
+    }
+
+    function failRankedOnTypo() {
+      if (done) return;
+      clearInterval(timer); timer = null; started = false; done = true;
+      elapsed = (performance.now() - t0) / 1000;
+      const charsTyped = typed.length;
+      const time = elapsed.toFixed(2);
+      const cps = elapsed > 0 ? (charsTyped / elapsed).toFixed(2) : "0.00";
+      const acc = keys > 0 ? Math.max(0, Math.round(((keys - typos) / keys) * 100)) : 0;
+
+      box.classList.remove("success", "finished");
+      box.classList.add("failed");
+      $("result").classList.remove("success");
+      $("result").classList.add("failed", "show");
+
+      $("r-title").textContent = "❌ Gagal: Terjadi Typo!";
+      $("r-pb").hidden = true;
+      $("r-t").textContent = time + "s";
+      $("r-cps").textContent = cps;
+      $("r-wpm").textContent = "0";
+      $("r-acc").textContent = acc + "%";
+      $("r-typo").textContent = typos;
+
+      const rankedBox = $("r-ranked-status");
+      if (rankedBox) {
+        rankedBox.innerHTML = `
+          <div class="r-ranked-box failed-record" style="background:rgba(255,93,108,.12);border-color:rgba(255,93,108,.4)">
+            <b style="color:var(--red);display:block;margin-bottom:4px">⚠️ Mode Ranked Gugur!</b>
+            <div style="font-size:.78rem;color:var(--dim);margin-bottom:8px">
+              Mode Ranked mewajibkan <b>100% akurasi (0 Typo)</b> untuk dapat tercatat di Leaderboard Global.
+            </div>
+            <button class="btn primary sm" id="btn-fail-restart" type="button" style="min-height:36px;font-size:.82rem;width:100%">
+              🔄 Coba Lagi dari Awal (Tab / Enter)
+            </button>
+          </div>
+        `;
+        const btnFailRestart = $("btn-fail-restart");
+        if (btnFailRestart) btnFailRestart.onclick = () => reset(true);
+      }
+
+      inp.blur();
+      toast("❌ Gagal! Mode Ranked tidak boleh ada typo sama sekali. Tekan Tab / Enter untuk ulangi.");
+      setTimeout(() => $("result").scrollIntoView({ behavior: "smooth", block: "center" }), 80);
+    }
+
+    function sanitizeUser(u) {
+      return (u || "").trim().toLowerCase().replace(/[^a-z0-9_]/g, "");
+    }
+
+    function usernameToEmail(u) {
+      return `${u}@typingdrill.internal`;
+    }
+
+    function showAuthAlert(msg, type = "error") {
+      const el = $("auth-alert");
+      el.className = "auth-alert " + type;
+      el.textContent = msg;
+    }
+    function hideAuthAlert() {
+      const el = $("auth-alert");
+      el.className = "auth-alert";
+      el.textContent = "";
+    }
+
+    function switchAuthTab(mode) {
+      authMode = mode;
+      hideAuthAlert();
+      $("tab-login").classList.toggle("active", mode === "login");
+      $("tab-register").classList.toggle("active", mode === "register");
+      $("auth-modal-title").textContent = mode === "login" ? "Masuk ke Akun" : "Daftar Akun Baru";
+      $("auth-submit-text").textContent = mode === "login" ? "Masuk" : "Daftar";
+      $("auth-password").autocomplete = mode === "login" ? "current-password" : "new-password";
+    }
+
+    function openAuth(mode = "login") {
+      switchAuthTab(mode);
+      hideAuthAlert();
+      $("auth-username").value = "";
+      $("auth-password").value = "";
+      closeAll();
+      $("m-auth").classList.add("on");
+      setTimeout(() => $("auth-username").focus(), 120);
+    }
+
+    function openUserModal() {
+      if (!currentUser) { openAuth("login"); return; }
+      closeAll();
+      $("m-user").classList.add("on");
+    }
+
+    function openLeaderboard() {
+      const sec = $("section-leaderboard");
+      if (sec) {
+        sec.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      loadLeaderboard();
+    }
+
+    async function initAuth() {
+      if (!sb) return;
+      try {
+        const { data: { session } } = await sb.auth.getSession();
+        if (session && session.user) {
+          await loadUserProfile(session.user.id, session.user);
+        } else {
+          setGuestUI();
+        }
+      } catch (e) {
+        console.error("Auth init error:", e);
+        setGuestUI();
+      }
+
+      sb.auth.onAuthStateChange(async (event, session) => {
+        if (session && session.user) {
+          await loadUserProfile(session.user.id, session.user);
+        } else {
+          currentUser = null;
+          userRankedPB = null;
+          setGuestUI();
+        }
+      });
+    }
+
+    async function loadUserProfile(userId, userObj) {
+      try {
+        const { data: prof } = await sb.from("profiles").select("username").eq("id", userId).maybeSingle();
+        let name = prof && prof.username ? prof.username : "";
+        if (!name && userObj && userObj.email) {
+          name = userObj.email.split("@")[0];
+        }
+        if (!name) name = "Pemain";
+        currentUser = { id: userId, username: name };
+        setLoggedInUI(name);
+        await fetchUserRankedPB();
+        updateRankedBanner();
+        loadLeaderboard();
+        if (pendingRankedScore) {
+          await submitRankedScore(pendingRankedScore);
+          pendingRankedScore = null;
+        }
+      } catch (e) {
+        console.error("Error loading profile:", e);
+      }
+    }
+
+    function setLoggedInUI(name) {
+      $("auth-btn-label").textContent = name;
+      $("btn-auth-trigger").title = `Masuk sebagai ${name}`;
+      $("user-profile-name").textContent = name;
+      $("user-avatar-initial").textContent = name.charAt(0).toUpperCase();
+      $("btn-auth-trigger").classList.add("logged-in");
+    }
+
+    function setGuestUI() {
+      $("auth-btn-label").textContent = "Masuk";
+      $("btn-auth-trigger").title = "Masuk atau Daftar Akun";
+      $("btn-auth-trigger").classList.remove("logged-in");
+    }
+
+    async function handleAuthSubmit() {
+      hideAuthAlert();
+      const rawUser = $("auth-username").value;
+      const pass = $("auth-password").value;
+      const u = sanitizeUser(rawUser);
+
+      if (!u || u.length < 3 || u.length > 20) {
+        showAuthAlert("Username harus 3-20 karakter (hanya huruf, angka, garis bawah).");
+        return;
+      }
+      if (!pass || pass.length < 6) {
+        showAuthAlert("Password minimal 6 karakter.");
+        return;
+      }
+
+      const submitBtn = $("btn-auth-submit");
+      const submitText = $("auth-submit-text");
+      submitBtn.disabled = true;
+      submitText.textContent = authMode === "login" ? "Memproses masuk..." : "Mendaftarkan...";
+
+      try {
+        const email = usernameToEmail(u);
+
+        if (authMode === "register") {
+          // Cek apakah username sudah ada di profiles
+          const { data: exist } = await sb.from("profiles").select("id").eq("username", u).maybeSingle();
+          if (exist) {
+            showAuthAlert("Username ini sudah terdaftar! Silakan pilih nama lain atau masuk.");
+            submitBtn.disabled = false;
+            submitText.textContent = "Daftar";
+            return;
+          }
+
+          const { data, error } = await sb.auth.signUp({
+            email,
+            password: pass
+          });
+          if (error) {
+            showAuthAlert("Gagal mendaftar: " + error.message);
+            submitBtn.disabled = false;
+            submitText.textContent = "Daftar";
+            return;
+          }
+          if (data && data.user) {
+            await sb.from("profiles").upsert({
+              id: data.user.id,
+              username: u,
+              updated_at: new Date().toISOString()
+            });
+            currentUser = { id: data.user.id, username: u };
+            setLoggedInUI(u);
+            closeAll();
+            toast(`🎉 Selamat datang, ${u}! Berhasil mendaftar.`);
+            if (pendingRankedScore) {
+              await submitRankedScore(pendingRankedScore);
+              pendingRankedScore = null;
+            }
+          }
+        } else {
+          // Login
+          const { data, error } = await sb.auth.signInWithPassword({
+            email,
+            password: pass
+          });
+          if (error) {
+            showAuthAlert("Login gagal: periksa kembali username dan password Anda.");
+            submitBtn.disabled = false;
+            submitText.textContent = "Masuk";
+            return;
+          }
+          if (data && data.user) {
+            await loadUserProfile(data.user.id, data.user);
+            closeAll();
+            toast(`👋 Selamat datang kembali, ${currentUser.username}!`);
+          }
+        }
+      } catch (err) {
+        showAuthAlert("Terjadi kesalahan: " + (err.message || err));
+      } finally {
+        submitBtn.disabled = false;
+        submitText.textContent = authMode === "login" ? "Masuk" : "Daftar";
+      }
+    }
+
+    async function handleLogout() {
+      if (!sb) return;
+      await sb.auth.signOut();
+      currentUser = null;
+      userRankedPB = null;
+      setGuestUI();
+      closeAll();
+      toast("🚪 Anda telah keluar dari akun.");
+      updateRankedBanner();
+    }
+
+    async function fetchUserRankedPB() {
+      if (!sb || !currentUser) return;
+      try {
+        const { data } = await sb.from("ranked_leaderboard").select("time, cps, wpm, acc, typos").eq("user_id", currentUser.id).maybeSingle();
+        if (data) {
+          userRankedPB = {
+            time: parseFloat(data.time),
+            cps: parseFloat(data.cps),
+            wpm: parseInt(data.wpm, 10),
+            acc: parseInt(data.acc, 10)
+          };
+          $("user-pb-time").textContent = userRankedPB.time.toFixed(2) + "s";
+          $("user-pb-cps").textContent = userRankedPB.cps.toFixed(1) + " cps";
+        } else {
+          userRankedPB = null;
+          $("user-pb-time").textContent = "-";
+          $("user-pb-cps").textContent = "-";
+        }
+      } catch (e) {
+        console.warn("fetchUserRankedPB error", e);
+      }
+    }
+
+    async function submitRankedScore(sc) {
+      if (!sb || !currentUser) return;
+      if (sc.time < 3.0 || sc.cps > 25.0) {
+        toast("⚠️ Skor di luar batas wajar pengetikan manusia.");
+        return;
+      }
+
+      if (userRankedPB && sc.time >= userRankedPB.time) {
+        toast(`✅ Skor ranked ${sc.time}s selesai (Rekor terbaik Anda: ${userRankedPB.time.toFixed(2)}s)`);
+        return;
+      }
+
+      try {
+        const payload = {
+          user_id: currentUser.id,
+          username: currentUser.username,
+          time: sc.time,
+          cps: sc.cps,
+          wpm: sc.wpm,
+          acc: sc.acc,
+          typos: sc.typos,
+          updated_at: new Date().toISOString()
+        };
+        const { error } = await sb.from("ranked_leaderboard").upsert(payload, { onConflict: "user_id" });
+        if (error) {
+          if (error.code === "PGRST205") {
+            toast("⚠️ Tabel ranked_leaderboard belum dibuat di Supabase!");
+          } else {
+            console.error("Ranked submit error:", error);
+            toast("Gagal menyimpan rekor: " + error.message);
+          }
+        } else {
+          userRankedPB = { time: sc.time, cps: sc.cps, wpm: sc.wpm, acc: sc.acc };
+          $("user-pb-time").textContent = sc.time.toFixed(2) + "s";
+          $("user-pb-cps").textContent = sc.cps.toFixed(1) + " cps";
+          toast(`🏆 REKOR RANKED BARU! ${sc.time}s masuk ke Leaderboard!`);
+          updateRankedBanner();
+          loadLeaderboard();
+        }
+      } catch (e) {
+        console.error("Submit score err:", e);
+      }
+    }
+
+    async function loadLeaderboard() {
+      const listEl = $("lb-list");
+      const pageListEl = $("page-lb-list");
+      if (listEl) listEl.innerHTML = '<div class="empty">Memuat papan peringkat...</div>';
+      if (pageListEl) pageListEl.innerHTML = '<div class="empty">Memuat papan peringkat...</div>';
+      if ($("lb-user-footer")) $("lb-user-footer").hidden = true;
+      if ($("page-lb-user-footer")) $("page-lb-user-footer").hidden = true;
+      if ($("lb-target-shortcut")) $("lb-target-shortcut").hidden = (target === RANKED_WORD);
+
+      if (!sb) {
+        const msg = '<div class="empty">Koneksi Supabase belum siap.</div>';
+        if (listEl) listEl.innerHTML = msg;
+        if (pageListEl) pageListEl.innerHTML = msg;
+        return;
+      }
+
+      try {
+        const { data, error } = await sb
+          .from("ranked_leaderboard")
+          .select("user_id, username, time, cps, acc, updated_at")
+          .order("time", { ascending: true })
+          .limit(50);
+
+        if (error) {
+          const errHtml = (error.code === "PGRST205") ? `
+            <div style="padding:14px;background:rgba(255,93,108,.1);border:1px solid rgba(255,93,108,.3);border-radius:12px;font-size:.82rem;line-height:1.5">
+              <b style="color:var(--red)">⚠️ Tabel Belum Dibuat di Supabase</b><br>
+              Tabel <code>ranked_leaderboard</code> belum dibuat di project Supabase Anda.<br><br>
+              Silakan buka <b>Supabase SQL Editor</b> dan jalankan script SQL dari file <code>supabase_leaderboard.sql</code> yang telah disediakan di folder proyek.
+            </div>` : `<div class="empty">Gagal memuat: ${error.message}</div>`;
+          if (listEl) listEl.innerHTML = errHtml;
+          if (pageListEl) pageListEl.innerHTML = errHtml;
+          return;
+        }
+
+        if (!data || data.length === 0) {
+          const emptyHtml = '<div class="empty">Belum ada pemain di peringkat ini.<br>Jadilah yang pertama menaklukkan kata 85 huruf ini dengan 0 typo!</div>';
+          if (listEl) listEl.innerHTML = emptyHtml;
+          if (pageListEl) pageListEl.innerHTML = emptyHtml;
+          return;
+        }
+
+        let myRank = -1;
+        const html = data.map((item, idx) => {
+          const rank = idx + 1;
+          const isMe = currentUser && currentUser.id === item.user_id;
+          if (isMe) myRank = rank;
+
+          let rankBadge = `#${rank}`;
+          let rowClass = "lb-item";
+          if (rank === 1) { rankBadge = "🥇 1"; rowClass += " top-1"; }
+          else if (rank === 2) { rankBadge = "🥈 2"; rowClass += " top-2"; }
+          else if (rank === 3) { rankBadge = "🥉 3"; rowClass += " top-3"; }
+          if (isMe) rowClass += " is-me";
+
+          return `
+            <div class="${rowClass}">
+              <span class="lb-pos">${rankBadge}</span>
+              <span class="lb-name" title="${item.username}">${item.username}${isMe ? '<span class="me-badge">Anda</span>' : ''}</span>
+              <span class="lb-time">${Number(item.time).toFixed(2)}s</span>
+              <span class="lb-cps">${Number(item.cps).toFixed(1)}</span>
+              <span class="lb-acc">${item.acc}%</span>
+            </div>
+          `;
+        }).join("");
+
+        if (listEl) listEl.innerHTML = html;
+        if (pageListEl) pageListEl.innerHTML = html;
+
+        if (currentUser && userRankedPB) {
+          const scoreText = `${userRankedPB.time.toFixed(2)}s · ${userRankedPB.cps.toFixed(1)} cps · ${userRankedPB.acc}%`;
+          const rankText = myRank > 0 ? `Peringkat #${myRank}` : "Di luar Top 50";
+          if ($("lb-user-footer")) {
+            $("lb-user-footer").hidden = false;
+            $("lb-my-score").textContent = scoreText;
+            $("lb-my-rank").textContent = rankText;
+          }
+          if ($("page-lb-user-footer")) {
+            $("page-lb-user-footer").hidden = false;
+            $("page-lb-my-score").textContent = scoreText;
+            $("page-lb-my-rank").textContent = rankText;
+          }
+        }
+      } catch (err) {
+        const errHtml = `<div class="empty">Terjadi kesalahan: ${err.message || err}</div>`;
+        if (listEl) listEl.innerHTML = errHtml;
+        if (pageListEl) pageListEl.innerHTML = errHtml;
+      }
+    }
+
     /* target & timer modes */
     let timerMode = 0; // 0 = Bebas / Tanpa Timer (default), 10, 15, 20, atau custom
     let customTimerVal = 30;
@@ -1306,6 +2359,7 @@
       inp.maxLength = target.length;
       document.querySelectorAll(".chip").forEach((c, i) => c.classList.toggle("active", PRESETS[i].w === target));
       reset(autoFocus);
+      updateRankedBanner();
     }
     let lastKeyTime = 0;
     function reset(autoFocus = false) {
@@ -1320,7 +2374,7 @@
       }
       $("cps").textContent = "0.0"; $("wpm").textContent = "0";
       $("prog").textContent = "0/" + target.length; $("acc").textContent = "100%"; $("bar").style.width = "0";
-      box.classList.remove("success", "finished"); $("result").classList.remove("show");
+      box.classList.remove("success", "finished", "failed"); $("result").classList.remove("show", "failed");
       render();
       if (autoFocus) {
         focusBox(true);
@@ -1498,6 +2552,13 @@
         if (char !== target[typed.length]) {
           typos++;
           click(true);
+          if (target === RANKED_WORD) {
+            typed = v;
+            paint();
+            stats();
+            failRankedOnTypo();
+            return;
+          }
         } else {
           click(false, char);
         }
@@ -1576,6 +2637,56 @@
       history_();
       setTimeout(() => $("result").scrollIntoView({ behavior: "smooth", block: "center" }), 80);
 
+      // Ranked Mode check (Taumatawhaka... completed with 0 typos)
+      const isRanked = (target === RANKED_WORD) && (charsTyped === target.length) && (typos === 0);
+      const rankedBox = $("r-ranked-status");
+      if (rankedBox) {
+        if (isRanked) {
+          const scoreObj = {
+            time: parseFloat(time),
+            cps: parseFloat(cps),
+            wpm: wpm,
+            acc: acc,
+            typos: typos
+          };
+
+          if (currentUser) {
+            const isBetter = (!userRankedPB || scoreObj.time < userRankedPB.time);
+            submitRankedScore(scoreObj);
+            rankedBox.innerHTML = `
+              <div class="r-ranked-box ${isBetter ? 'new-record' : ''}">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                  <div>
+                    <b style="color:var(--gold)">🏆 Mode Ranked Selesai!</b>
+                    <div style="font-size:.76rem;color:var(--dim)">${isBetter ? '🎉 Rekor baru berhasil dikirim ke Leaderboard Global!' : 'Rekor terbaik Anda: ' + userRankedPB.time.toFixed(2) + 's'}</div>
+                  </div>
+                  <button class="chip-btn gold" id="btn-result-open-lb" type="button" style="min-height:34px;font-size:.78rem">Buka Leaderboard</button>
+                </div>
+              </div>
+            `;
+            const btnOpen = $("btn-result-open-lb");
+            if (btnOpen) btnOpen.onclick = openLeaderboard;
+          } else {
+            pendingRankedScore = scoreObj;
+            rankedBox.innerHTML = `
+              <div class="r-ranked-box new-record">
+                <b style="color:var(--gold)">🏆 Mode Ranked Selesai! (${time}s · ${cps} CPS)</b>
+                <div style="font-size:.78rem;color:var(--dim);margin:4px 0 8px">
+                  Masuk atau daftar untuk mencatat nama dan rekor Anda di <b>Leaderboard Global</b>!
+                </div>
+                <button class="btn primary sm" id="btn-result-auth" type="button" style="min-height:36px;font-size:.82rem;width:100%">
+                  👤 Masuk / Daftar Sekarang
+                </button>
+              </div>
+            `;
+            const btnAuth = $("btn-result-auth");
+            if (btnAuth) btnAuth.onclick = () => openAuth("register");
+          }
+        } else {
+          rankedBox.innerHTML = "";
+        }
+      }
+
       playFinishSound();
       if (pb) {
         toast(`🎉 Rekor baru: ${time} detik!`);
@@ -1593,7 +2704,10 @@
     }
 
     /* presets */
-    $("chips").innerHTML = PRESETS.map(p => `<button class="chip" title="${p.d}">${p.l}<b>${p.w.length}</b></button>`).join("");
+    $("chips").innerHTML = PRESETS.map(p => {
+      const isRanked = p.w === RANKED_WORD;
+      return `<button class="chip${isRanked ? ' ranked-chip' : ''}" title="${isRanked ? '🏆 MODE RANKED: ' + p.d : p.d}">${isRanked ? '🏆 ' : ''}${p.l}<b>${p.w.length}</b></button>`;
+    }).join("");
     document.querySelectorAll(".chip").forEach((c, i) => c.addEventListener("click", () => setTarget(PRESETS[i].w)));
 
     /* catalog */
@@ -1704,8 +2818,41 @@
     function sndUI() { $("snd").textContent = sound ? "Aktif" : "Mati"; $("btn-sound").classList.toggle("on", sound) }
     $("btn-sound").onclick = () => { sound = !sound; store.set(SND_KEY, sound ? "1" : "0"); sndUI(); toast(sound ? "🔊 Suara aktif" : "🔇 Suara mati") };
 
+    /* Auth & Leaderboard Event Handlers */
+    $("btn-open-lb").onclick = openLeaderboard;
+    $("btn-refresh-lb").onclick = loadLeaderboard;
+    if ($("btn-refresh-page-lb")) $("btn-refresh-page-lb").onclick = () => {
+      loadLeaderboard();
+      toast("🔄 Leaderboard diperbarui!");
+    };
+    $("btn-jump-ranked").onclick = () => { setTarget(RANKED_WORD, true); closeAll(); };
+    $("btn-auth-trigger").onclick = () => { currentUser ? openUserModal() : openAuth("login"); };
+    $("ranked-tag-action").onclick = () => {
+      if (target === RANKED_WORD) {
+        openLeaderboard();
+      } else {
+        setTarget(RANKED_WORD, true);
+        toast("🏆 Mode Ranked Taumatawhaka... dipilih!");
+      }
+    };
+    $("tab-login").onclick = () => switchAuthTab("login");
+    $("tab-register").onclick = () => switchAuthTab("register");
+    $("btn-auth-submit").onclick = (e) => { e.preventDefault(); handleAuthSubmit(); };
+    $("btn-logout").onclick = handleLogout;
+    $("btn-profile-to-ranked").onclick = () => { setTarget(RANKED_WORD, true); closeAll(); };
+    $("btn-profile-to-lb").onclick = () => { closeAll(); openLeaderboard(); };
+
     document.addEventListener("keydown", e => {
-      if (e.key === "Escape") { modalOpen() ? closeAll() : openCatalog(); return }
+      if (e.key === "Escape") {
+        if (modalOpen()) {
+          closeAll();
+        } else if (target === RANKED_WORD) {
+          toast("🔒 Sedang di Mode Ranked. Klik 'Mode Bebas' untuk memilih kata lain.");
+        } else {
+          openCatalog();
+        }
+        return;
+      }
       if (modalOpen()) return;
       if (e.key === "Tab" || (done && e.key === "Enter")) { e.preventDefault(); reset(true) }
       else if (!done && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey && document.activeElement !== inp) focusBox();
@@ -1715,6 +2862,9 @@
     if (store.get(SND_KEY) !== null) sound = store.get(SND_KEY) === "1";
     sndUI();
     setTarget(target, false);
+    initAuth();
+    updateRankedBanner();
+    loadLeaderboard();
   </script>
 </body>
 
