@@ -2311,12 +2311,12 @@
         w: "internasionalismeproletariat",
         shortName: "Internasionalisme…",
         title: "Internasionalismeproletariat…",
-        len: 32,
-        tag: "32 huruf",
+        len: 28,
+        tag: "28 huruf",
         badge: "Tier Hard 🔥",
         shortDesc: "Ideologi Politik",
         desc: "Ideologi Politik antar bangsa",
-        flag: "🌋"
+        flag: "🚩"
       }
     ];
 
@@ -2344,15 +2344,29 @@
     /* Multi-word Ranked Personal Bests Storage */
     const RANKED_PBS_KEY = "sambung_kata_ranked_pbs_multi_v2";
     function getRankedPBs() {
+      let d = {};
       try {
-        const d = JSON.parse(store.get(RANKED_PBS_KEY));
-        if (d && typeof d === "object") return d;
+        const stored = JSON.parse(store.get(RANKED_PBS_KEY));
+        if (stored && typeof stored === "object") d = stored;
       } catch { }
-      return {};
+
+      // Cross-check with general PB_KEY so user's true best performance is never lost
+      const generalPBs = pbs();
+      RANKED_WORDS.forEach(rw => {
+        const gen = generalPBs[rw.w];
+        if (gen && gen.time > 0) {
+          const cur = d[rw.id];
+          if (!cur || gen.time < cur.time || (gen.time === cur.time && gen.cps > cur.cps)) {
+            d[rw.id] = { time: gen.time, cps: gen.cps, wpm: gen.wpm || 0, acc: gen.acc || 100, typos: 0 };
+          }
+        }
+      });
+      return d;
     }
     function saveRankedPB(wordId, score) {
       const all = getRankedPBs();
-      if (!all[wordId] || score.time < all[wordId].time) {
+      const prev = all[wordId];
+      if (!prev || score.time < prev.time || (score.time === prev.time && score.cps > prev.cps)) {
         all[wordId] = { time: score.time, cps: score.cps, wpm: score.wpm, acc: score.acc, typos: score.typos };
         store.set(RANKED_PBS_KEY, JSON.stringify(all));
         return true;
@@ -2727,17 +2741,36 @@
             .eq("user_id", currentUser.id);
           if (data && !error) {
             const allPBs = getRankedPBs();
-            data.forEach(row => {
-              if (row.word_id) {
-                allPBs[row.word_id] = {
-                  time: parseFloat(row.time),
-                  cps: parseFloat(row.cps),
-                  wpm: row.wpm,
-                  acc: row.acc,
-                  typos: row.typos
-                };
+            for (const row of data) {
+              if (!row.word_id) continue;
+              const dbTime = parseFloat(row.time);
+              const dbCps = parseFloat(row.cps);
+              const local = allPBs[row.word_id];
+
+              if (!local) {
+                allPBs[row.word_id] = { time: dbTime, cps: dbCps, wpm: row.wpm, acc: row.acc, typos: row.typos };
+              } else if (dbTime < local.time || (dbTime === local.time && dbCps > local.cps)) {
+                // Database memiliki catatan waktu yang lebih cepat, update local
+                allPBs[row.word_id] = { time: dbTime, cps: dbCps, wpm: row.wpm, acc: row.acc, typos: row.typos };
+              } else if (local.time < dbTime || (local.time === dbTime && local.cps > dbCps)) {
+                // Local memiliki catatan yang lebih cepat (misal database sempat tertimpa skor lambat)
+                // Pulihkan database ke rekor terbaik lokal!
+                try {
+                  const payload = {
+                    user_id: currentUser.id,
+                    username: currentUser.username,
+                    word_id: row.word_id,
+                    time: local.time,
+                    cps: local.cps,
+                    wpm: local.wpm,
+                    acc: local.acc,
+                    typos: local.typos,
+                    updated_at: new Date().toISOString()
+                  };
+                  await sb.from("ranked_leaderboard").upsert(payload, { onConflict: "user_id,word_id" });
+                } catch(e) {}
               }
-            });
+            }
             store.set(RANKED_PBS_KEY, JSON.stringify(allPBs));
           }
         } catch (e) { console.warn("fetchUserRankedPB error:", e); }
@@ -2788,38 +2821,48 @@
       }
     }
     async function submitRankedScore(sc) {
-      if (sc.time < 3.0 || sc.cps > 25.0) { toast("⚠️ Skor di luar batas wajar pengetikan manusia."); return; }
+      if (sc.time < 3.0 || sc.cps > 25.0) { toast("⚠️ Skor di luar batas wajar pengetikan manusia."); return false; }
       const rw = findRankedWordByText(target) || getActiveRankedWord();
       const wordId = rw.id;
-      const isNewBest = saveRankedPB(wordId, sc);
 
-      if (sb && currentUser) {
-        try {
-          const payload = {
-            user_id: currentUser.id,
-            username: currentUser.username,
-            word_id: wordId,
-            time: sc.time,
-            cps: sc.cps,
-            wpm: sc.wpm,
-            acc: sc.acc,
-            typos: sc.typos,
-            updated_at: new Date().toISOString()
-          };
-          const { error } = await sb.from("ranked_leaderboard").upsert(payload, { onConflict: "user_id,word_id" });
-          if (error) console.error("Supabase upsert error:", error);
-        } catch(e) { console.warn("Supabase upsert fallback:", e); }
-      }
+      const userPBs = getRankedPBs();
+      const prevPB = userPBs[wordId];
+      // Hanya dianggap rekor baru jika belum ada rekor ATAU waktu lebih cepat ATAU waktu sama dengan CPS lebih tinggi
+      const isNewBest = (!prevPB || sc.time < prevPB.time || (sc.time === prevPB.time && sc.cps > prevPB.cps));
 
       if (isNewBest) {
-        toast(`🏆 REKOR BARU (${rw.len} HURUF)! ${sc.time}s masuk ke Leaderboard ${rw.shortName}!`);
+        saveRankedPB(wordId, sc);
+
+        if (sb && currentUser) {
+          try {
+            const payload = {
+              user_id: currentUser.id,
+              username: currentUser.username,
+              word_id: wordId,
+              time: sc.time,
+              cps: sc.cps,
+              wpm: sc.wpm,
+              acc: sc.acc,
+              typos: sc.typos,
+              updated_at: new Date().toISOString()
+            };
+            const { error } = await sb.from("ranked_leaderboard").upsert(payload, { onConflict: "user_id,word_id" });
+            if (error) console.error("Supabase upsert error:", error);
+          } catch(e) { console.warn("Supabase upsert fallback:", e); }
+        }
+
+        toast(`🎉 REKOR BARU (${rw.len} HURUF)! ${sc.time.toFixed(2)}s masuk ke Leaderboard ${rw.shortName}!`);
       } else {
-        toast(`✅ Skor ${rw.shortName} ${sc.time}s selesai.`);
+        // Skor lebih lambat: JANGAN UBAH database atau local storage!
+        const prevText = prevPB ? `${prevPB.time.toFixed(2)}s` : "";
+        toast(`✅ Selesai dalam ${sc.time.toFixed(2)}s. Rekor terbaik Anda tetap ${prevText}.`);
       }
+
       updateRankedBanner();
       renderRankedWordSelector();
       renderUserMultiPBs();
       await loadLeaderboard(wordId);
+      return isNewBest;
     }
 
     async function loadLeaderboard(wordId) {
@@ -3151,7 +3194,7 @@
         const scoreObj = { time: parseFloat(time), cps: parseFloat(cps), wpm, acc, typos };
         const userPBs = getRankedPBs();
         const prevPB = userPBs[activeRW.id];
-        const isBetter = (!prevPB || scoreObj.time < prevPB.time);
+        const isBetter = (!prevPB || scoreObj.time < prevPB.time || (scoreObj.time === prevPB.time && scoreObj.cps > prevPB.cps));
         const prevBest = prevPB ? prevPB.time.toFixed(2) : null;
         submitRankedScore(scoreObj);
 
@@ -3161,7 +3204,9 @@
               <div>
                 <b style="color:var(--gold)">🏆 Mode Ranked · ${activeRW.title} (${activeRW.len} huruf)!</b>
                 <div style="font-size:.76rem;color:var(--dim)">
-                  ${isBetter ? `🎉 Rekor baru berhasil dikirim ke Leaderboard Global!` : 'Rekor terbaik Anda: ' + prevBest + 's'}
+                  ${isBetter 
+                    ? `🎉 Rekor baru (${time}s) berhasil dikirim ke Leaderboard Global!` 
+                    : `Selesai dalam ${time}s. Rekor terbaik Anda tetap: <b>${prevBest}s</b>`}
                 </div>
               </div>
               <button class="chip-btn gold" id="btn-result-open-lb" type="button" style="min-height:34px;font-size:.78rem">🏆 Lihat Leaderboard</button>
@@ -3172,13 +3217,15 @@
             openLeaderboard();
           };
         } else {
-          pendingRankedScore = scoreObj;
-          rankedBox.innerHTML = `<div class="r-ranked-box new-record">
+          if (isBetter) pendingRankedScore = scoreObj;
+          rankedBox.innerHTML = `<div class="r-ranked-box ${isBetter ? 'new-record' : ''}">
             <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
               <div>
                 <b style="color:var(--gold)">🏆 Selesai ${activeRW.title} (${time}s · ${cps} CPS)!</b>
                 <div style="font-size:.76rem;color:var(--dim);margin-top:2px">
-                  Masuk atau daftar untuk mencatat nama dan rekor Anda di <b>Leaderboard Global</b>.
+                  ${isBetter 
+                    ? `Masuk atau daftar untuk mencatat rekor baru ini di <b>Leaderboard Global</b>.` 
+                    : `Rekor terbaik Anda tetap ${prevBest ? prevBest + 's' : time + 's'}. Masuk untuk mencatat rekor.`}
                 </div>
               </div>
               <button class="btn primary" id="btn-result-auth" type="button" style="min-height:36px;padding:0 14px;font-size:.82rem">👤 Masuk / Daftar</button>
