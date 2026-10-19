@@ -410,6 +410,335 @@
       flex-wrap: wrap
     }
 
+    /* Ranked Word Selector */
+    .ranked-selector-card {
+      display: none;
+      padding: 12px 14px;
+      background: linear-gradient(180deg, rgba(245, 197, 66, .09), var(--s1) 45%);
+      border: 1px solid rgba(245, 197, 66, .35);
+      border-radius: var(--r);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, .25);
+      overflow: hidden;
+      box-sizing: border-box;
+      max-width: 100%;
+    }
+
+    body.mode-ranked .ranked-selector-card {
+      display: block;
+      animation: pop .26s ease-out;
+    }
+
+    .rws-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      gap: 8px;
+    }
+
+    .rws-title {
+      font-size: .88rem;
+      font-weight: 800;
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: -.01em;
+    }
+
+    .rws-pill {
+      font-size: .68rem;
+      font-weight: 700;
+      color: var(--mint);
+      background: rgba(94, 234, 212, .12);
+      border: 1px solid rgba(94, 234, 212, .3);
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+
+    .rws-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 6px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    @media (max-width: 720px) {
+      .ranked-selector-card {
+        padding: 12px;
+      }
+      .rws-grid {
+        display: flex;
+        overflow-x: auto;
+        margin: 0 -12px;
+        padding: 2px 12px 6px;
+        scrollbar-width: none;
+        scroll-snap-type: x proximity;
+        -webkit-overflow-scrolling: touch;
+      }
+      .rws-grid::-webkit-scrollbar {
+        display: none;
+      }
+      .rws-item {
+        flex: 0 0 150px;
+        min-width: 150px;
+        scroll-snap-align: start;
+      }
+    }
+
+    .rws-item {
+      position: relative;
+      background: var(--s2);
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      padding: 9px 8px;
+      text-align: left;
+      cursor: pointer;
+      transition: all .2s cubic-bezier(.16, 1, .3, 1);
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      user-select: none;
+      min-width: 0;
+      width: 100%;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .rws-item:hover {
+      border-color: rgba(245, 197, 66, .45);
+      background: rgba(245, 197, 66, .06);
+      transform: translateY(-2px);
+    }
+
+    .rws-item.active {
+      background: linear-gradient(145deg, rgba(245, 197, 66, .18), rgba(245, 197, 66, .06));
+      border-color: var(--gold);
+      box-shadow: 0 0 0 1px var(--gold), 0 6px 18px rgba(245, 197, 66, .18);
+    }
+
+    .rws-item-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .rws-flag {
+      font-size: 1.15rem;
+      line-height: 1;
+    }
+
+    .rws-badge {
+      font-size: .64rem;
+      font-weight: 800;
+      font-family: var(--mono);
+      background: rgba(255, 255, 255, .08);
+      color: var(--dim);
+      padding: 1px 5px;
+      border-radius: 5px;
+      flex-shrink: 0;
+    }
+
+    .rws-item.active .rws-badge {
+      background: var(--gold);
+      color: #1a1405;
+      font-weight: 800;
+    }
+
+    .rws-name {
+      font-size: .78rem;
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
+    }
+
+    .rws-item.active .rws-name {
+      color: var(--gold);
+    }
+
+    .rws-sub {
+      font-size: .66rem;
+      color: var(--dim);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
+    }
+
+    .rws-pb-badge {
+      margin-top: 2px;
+      font-size: .66rem;
+      font-family: var(--mono);
+      color: var(--mint);
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
+    }
+
+    /* Leaderboard Word Filter Tabs */
+    .lb-filter-bar {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 4px 2px 8px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(245, 197, 66, .2) transparent;
+      scroll-snap-type: x proximity;
+      margin-bottom: 4px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .lb-filter-bar::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .lb-filter-bar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .lb-filter-bar::-webkit-scrollbar-thumb {
+      background: rgba(245, 197, 66, .25);
+      border-radius: 4px;
+    }
+
+    .lb-filter-btn {
+      flex: 0 0 auto;
+      scroll-snap-align: start;
+      min-height: 36px;
+      padding: 0 10px;
+      border-radius: 10px;
+      background: var(--s2);
+      border: 1px solid var(--line);
+      font-size: .76rem;
+      font-weight: 600;
+      color: var(--dim);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all .2s;
+      white-space: nowrap;
+    }
+
+    @media (min-width: 700px) {
+      .lb-card .lb-filter-bar {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        overflow-x: visible;
+        padding-bottom: 4px;
+      }
+
+      .lb-card .lb-filter-btn {
+        flex: 1 1 0;
+        justify-content: center;
+        padding: 0 6px;
+        min-width: 0;
+      }
+
+      .lb-card .lb-filter-btn span:nth-child(2) {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+
+    .lb-filter-btn:hover {
+      border-color: rgba(245, 197, 66, .45);
+      color: var(--text);
+    }
+
+    .lb-filter-btn.active {
+      background: rgba(245, 197, 66, .18);
+      color: var(--gold);
+      border-color: var(--gold);
+      box-shadow: inset 0 0 0 1px rgba(245, 197, 66, .45);
+    }
+
+    .lb-filter-btn .btn-len {
+      font-size: .66rem;
+      font-family: var(--mono);
+      padding: 1px 6px;
+      border-radius: 5px;
+      background: rgba(255, 255, 255, .08);
+      color: inherit;
+      flex-shrink: 0;
+    }
+
+    .lb-filter-btn.active .btn-len {
+      background: rgba(245, 197, 66, .3);
+      color: var(--gold);
+      font-weight: 700;
+    }
+
+    .dummy-demo-badge {
+      font-size: .64rem;
+      font-weight: 700;
+      color: var(--gold);
+      background: rgba(245, 197, 66, .12);
+      border: 1px solid rgba(245, 197, 66, .3);
+      padding: 2px 7px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .ranked-pill-tier {
+      font-size: .65rem;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 5px;
+      background: rgba(245, 197, 66, .18);
+      color: var(--gold);
+      border: 1px solid rgba(245, 197, 66, .35);
+    }
+
+    /* Multi PB Grid in Profile Modal */
+    .user-multi-pbs {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 6px;
+      max-height: 240px;
+      overflow-y: auto;
+      margin-top: 6px;
+    }
+
+    .user-pb-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--s1);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      font-size: .8rem;
+    }
+
+    .user-pb-row .name {
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .user-pb-row .score {
+      font-family: var(--mono);
+      font-weight: 700;
+      color: var(--gold);
+    }
+
     /* arena */
     .arena {
       position: relative;
@@ -1579,8 +1908,7 @@
       <div class="mode-seg-wrap" role="tablist" aria-label="Pilih mode">
         <button class="mode-seg" data-mode="practice" role="tab" type="button">⚡ Latihan<small>Bebas, tanpa
             peringkat</small></button>
-        <button class="mode-seg" data-mode="ranked" role="tab" type="button">🏆 Ranked<small>85 huruf, masuk
-            leaderboard</small></button>
+        <button class="mode-seg" data-mode="ranked" role="tab" type="button">🏆 Ranked<small>5 Kata Resmi, leaderboard</small></button>
       </div>
     </div>
   </div>
@@ -1594,6 +1922,17 @@
           <button class="pbtn" id="btn-custom">✍️ Kata sendiri</button>
         </div>
         <div class="chips" id="chips"></div>
+      </section>
+
+      <!-- Selector Kata Ranked Resmi -->
+      <section class="card ranked-selector-card" id="ranked-selector-card">
+        <div class="rws-head">
+          <div class="rws-title">
+            <span>🏆</span> <span>Pilihan Kata Monster Ranked</span>
+          </div>
+          <span class="rws-pill">5 Kata Resmi</span>
+        </div>
+        <div class="rws-grid" id="ranked-words-grid"></div>
       </section>
 
       <section class="card info">
@@ -1668,14 +2007,21 @@
             <div class="lb-trophy-badge">🏆</div>
             <div>
               <div class="lb-heading-row">
-                <h3 class="lb-title">Global Ranked Leaderboard</h3><span class="lb-live-badge"><span
-                    class="avatar-dot"></span> Live</span>
+                <h3 class="lb-title">Global Ranked Leaderboard</h3>
+                <span class="lb-live-badge"><span class="avatar-dot"></span> Live</span>
               </div>
-              <p class="lb-subtitle">Kata terpanjang di dunia: <b>Taumatawhakatangihanga…</b> (85 huruf)</p>
+              <p class="lb-subtitle" id="page-lb-subtitle">Kata monster: <b>Taumatawhakatangihanga…</b> (85 huruf)</p>
             </div>
           </div>
-          <button class="chip-btn" id="btn-refresh-page-lb" title="Segarkan Leaderboard">🔄 Segarkan</button>
+          <div style="display:flex;align-items:center;gap:6px">
+            <button class="chip-btn gold" id="btn-page-lb-play-current" title="Mainkan kata ini di Mode Ranked">⚡ Mainkan Kata Ini</button>
+            <button class="chip-btn" id="btn-refresh-page-lb" title="Segarkan Leaderboard">🔄</button>
+          </div>
         </div>
+
+        <!-- Filter Bar Kategori Kata Ranked -->
+        <div class="lb-filter-bar" id="page-lb-filter-bar"></div>
+
         <div>
           <div class="lb-item header"><span>#</span><span>Pemain</span><span style="text-align:right">Waktu</span><span
               style="text-align:right">CPS</span><span style="text-align:right">Ak.</span></div>
@@ -1684,12 +2030,12 @@
           </div>
         </div>
         <div id="page-lb-user-footer" class="lb-footer-me" hidden>
-          <div><span style="font-size:.72rem;color:var(--dim);display:block">Rekor terbaik Anda:</span><strong
+          <div><span style="font-size:.72rem;color:var(--dim);display:block">Rekor Anda di kata ini:</span><strong
               id="page-lb-my-score" style="color:var(--gold)">-</strong></div>
           <div style="display:flex;align-items:center;gap:6px">
             <span id="page-lb-my-rank" class="chip-btn gold" style="min-height:28px;font-size:.76rem">#?</span>
             <button class="chip-btn danger" id="btn-delete-page-lb-row" type="button"
-              style="min-height:28px;padding:0 8px;font-size:.72rem">🗑️ Hapus</button>
+              style="min-height:28px;padding:0 8px;font-size:.72rem">🗑️ Reset Rekor</button>
           </div>
         </div>
       </section>
@@ -1755,14 +2101,21 @@
       <div class="sh"><span>🏆 Ranked Leaderboard</span><button class="icon-btn" data-close
           aria-label="Tutup">✕</button></div>
       <div class="sb">
-        <div class="lb-header-info">
-          <div><b style="color:var(--gold)">Taumatawhakatangihanga…</b>
-            <div style="font-size:.72rem;color:var(--dim)">Kata terpanjang di dunia · 85 huruf</div>
+        <div class="lb-header-info" id="modal-lb-header-info">
+          <div><b style="color:var(--gold)" id="modal-lb-title">Taumatawhakatangihanga…</b>
+            <div style="font-size:.72rem;color:var(--dim)" id="modal-lb-desc">Kata monster · 85 huruf</div>
           </div>
-          <button class="chip-btn" id="btn-refresh-lb" style="min-height:32px;font-size:.76rem">🔄 Segarkan</button>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span class="dummy-demo-badge">✨ Preview</span>
+            <button class="chip-btn" id="btn-refresh-lb" style="min-height:32px;font-size:.76rem">🔄 Segarkan</button>
+          </div>
         </div>
+
+        <!-- Filter Bar Kategori Kata Modal -->
+        <div class="lb-filter-bar" id="modal-lb-filter-bar"></div>
+
         <div id="lb-target-shortcut" class="lb-shortcut" hidden>
-          <span>🎯 Anda sedang tidak di mode Ranked.</span>
+          <span id="lb-target-shortcut-text">🎯 Sedang memilih kata ini.</span>
           <button class="btn primary" id="btn-jump-ranked"
             style="min-height:30px;padding:0 10px;font-size:.76rem;flex:none">Mainkan</button>
         </div>
@@ -1774,12 +2127,12 @@
           </div>
         </div>
         <div id="lb-user-footer" class="lb-footer-me" hidden>
-          <div><span style="font-size:.72rem;color:var(--dim);display:block">Rekor Anda saat ini:</span><strong
+          <div><span style="font-size:.72rem;color:var(--dim);display:block">Rekor Anda di kata ini:</span><strong
               id="lb-my-score" style="color:var(--gold)">-</strong></div>
           <div style="display:flex;align-items:center;gap:6px">
             <span id="lb-my-rank" class="chip-btn" style="min-height:28px;font-size:.76rem">#?</span>
             <button class="chip-btn danger" id="btn-delete-modal-lb-row" type="button"
-              style="min-height:28px;padding:0 8px;font-size:.72rem">🗑️ Hapus</button>
+              style="min-height:28px;padding:0 8px;font-size:.72rem">🗑️ Reset Rekor</button>
           </div>
         </div>
       </div>
@@ -1833,19 +2186,11 @@
           </div>
         </div>
         <div style="background:var(--s2);border:1px solid var(--line);border-radius:14px;padding:12px">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px">
-            <span style="font-size:.76rem;color:var(--dim)">👑 Rekor Ranked Anda</span>
-            <button class="chip-btn danger" id="btn-delete-ranked-pb" type="button"
-              style="min-height:26px;padding:0 8px;font-size:.72rem" hidden>🗑️ Hapus Rekor</button>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;gap:8px">
+            <span style="font-size:.76rem;color:var(--gold);font-weight:700">👑 Rekor Multi-Kata Ranked</span>
+            <span style="font-size:.7rem;color:var(--dim)">5 Kategori Kata</span>
           </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <div style="background:var(--s1);padding:8px 10px;border-radius:10px;border:1px solid var(--line)"><span
-                style="font-size:.7rem;color:var(--mute)">Waktu Terbaik</span><strong
-                style="display:block;color:var(--gold);font-size:1.05rem" id="user-pb-time">-</strong></div>
-            <div style="background:var(--s1);padding:8px 10px;border-radius:10px;border:1px solid var(--line)"><span
-                style="font-size:.7rem;color:var(--mute)">Kecepatan (CPS)</span><strong
-                style="display:block;font-size:1.05rem" id="user-pb-cps">-</strong></div>
-          </div>
+          <div id="user-multi-pbs-container" class="user-multi-pbs"></div>
         </div>
         <div style="display:flex;flex-direction:column;gap:8px;margin-top:6px">
           <button class="btn primary" id="btn-profile-to-ranked">🏆 Mainkan Mode Ranked</button>
@@ -1894,11 +2239,79 @@
     const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
     const PB_KEY = "sambung_kata_long_words_pb", SND_KEY = "sambung_kata_typing_sound";
 
-    /* Supabase & Ranked */
+    /* Supabase & Multi-Word Ranked */
     const SUPABASE_URL = "https://wlyiifkoeoqzejqkzatp.supabase.co";
     const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndseWlpZmtvZW9xemVqcWt6YXRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE4OTEwMDQsImV4cCI6MjEwNzQ2NzAwNH0.PI6GJmkJuEtv9ekQZyyPNaoYVADyNmkWDTkpj7jBfxc";
     const sb = (window.supabase && window.supabase.createClient) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON) : null;
-    const RANKED_WORD = PRESETS[0].w;
+
+    /* 5 Kata Resmi Mode Ranked */
+    const RANKED_WORDS = [
+      {
+        id: "taumata",
+        w: "taumatawhakatangihangakoauauotamateaturipukakapikimaungahoronukupokaiwhenuakitanatahu",
+        shortName: "Taumatawhaka…",
+        title: "Taumatawhakatangihanga…",
+        len: 85,
+        tag: "85 huruf",
+        badge: "Tier Monster 👑",
+        shortDesc: "Bukit Selandia Baru",
+        desc: "Bukit di Selandia Baru · Nama tempat terpanjang di dunia",
+        flag: "🇳🇿"
+      },
+      {
+        id: "muvaffakiyet",
+        w: "muvaffakiyetsizlestiricilestiriveremeyebileceklerimizdenmissinizcesine",
+        shortName: "Muvaffakiyetsiz…",
+        title: "Muvaffakiyetsizlestirici…",
+        len: 70,
+        tag: "70 huruf",
+        badge: "Tier Extreme ⚡",
+        shortDesc: "Bahasa Turki",
+        desc: "Kata terpanjang bahasa Turki",
+        flag: "🇹🇷"
+      },
+      {
+        id: "rindfleisch",
+        w: "rindfleischetikettierungsueberwachungsaufgabenuebertragungsgesetz",
+        shortName: "Rindfleischeti…",
+        title: "Rindfleischetikettierung…",
+        len: 63,
+        tag: "63 huruf",
+        badge: "Tier Extreme ⚡",
+        shortDesc: "Hukum Sapi Jerman",
+        desc: "Hukum pelabelan daging sapi Jerman",
+        flag: "🇩🇪"
+      },
+      {
+        id: "llanfair",
+        w: "llanfairpwyllgwyngyllgogerychwyrndrobwllllantysiliogogogoch",
+        shortName: "Llanfairpwll…",
+        title: "Llanfairpwllgwyngyll…",
+        len: 58,
+        tag: "58 huruf",
+        badge: "Tier Hard 🔥",
+        shortDesc: "Desa di Wales",
+        desc: "Desa di Wales, Inggris Raya",
+        flag: "🏴󠁧󠁢󠁷󠁬󠁳󠁿"
+      },
+      {
+        id: "pneumono",
+        w: "pneumonoultramicroscopicsilicovolcanoconiosis",
+        shortName: "Pneumonoultra…",
+        title: "Pneumonoultramicroscopic…",
+        len: 45,
+        tag: "45 huruf",
+        badge: "Tier Hard 🔥",
+        shortDesc: "Debu Silika Paru",
+        desc: "Penyakit paru akibat debu silika",
+        flag: "🌋"
+      }
+    ];
+
+    const RANKED_WORD = RANKED_WORDS[0].w;
+    let activeRankedWordId = "taumata";
+    let currentAppMode = "practice"; // "practice" | "ranked"
+
     let currentUser = null, userRankedPB = null, pendingRankedScore = null, authMode = "login";
     let target = PRESETS[0].w, typed = "", started = false, done = false, t0 = 0, timer = null, elapsed = 0, typos = 0, keys = 0, attempts = [], sound = true, db = null;
     const box = $("box"), inp = $("inp"), cover = $("cover");
@@ -1915,6 +2328,45 @@
         return data;
       } catch { return {} }
     };
+
+    /* Multi-word Ranked Personal Bests Storage */
+    const RANKED_PBS_KEY = "sambung_kata_ranked_pbs_multi_v2";
+    function getRankedPBs() {
+      try {
+        const d = JSON.parse(store.get(RANKED_PBS_KEY));
+        if (d && typeof d === "object") return d;
+      } catch { }
+      return {};
+    }
+    function saveRankedPB(wordId, score) {
+      const all = getRankedPBs();
+      if (!all[wordId] || score.time < all[wordId].time) {
+        all[wordId] = { time: score.time, cps: score.cps, wpm: score.wpm, acc: score.acc, typos: score.typos };
+        store.set(RANKED_PBS_KEY, JSON.stringify(all));
+        return true;
+      }
+      return false;
+    }
+    function deleteRankedPB(wordId) {
+      const all = getRankedPBs();
+      if (all[wordId]) {
+        delete all[wordId];
+        store.set(RANKED_PBS_KEY, JSON.stringify(all));
+        return true;
+      }
+      return false;
+    }
+
+    function getActiveRankedWord() {
+      return RANKED_WORDS.find(x => x.id === activeRankedWordId) || RANKED_WORDS[0];
+    }
+    function findRankedWordByText(w) {
+      const clean = (w || "").trim().toLowerCase();
+      return RANKED_WORDS.find(x => x.w === clean);
+    }
+    function isRankedWord(w) {
+      return !!findRankedWordByText(w);
+    }
 
     /* Sound engine */
     let ac = null; const soundCache = {};
@@ -1971,54 +2423,164 @@
 
     function toast(m) { const t = $("toast"); t.textContent = m; t.classList.add("show"); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove("show"), 2400) }
 
-    /* Mode Latihan / Ranked */
-    let lastPracticeWord = PRESETS[1].w;
+    /* Mode Latihan / Multi-Word Ranked */
+    let lastPracticeWord = PRESETS[5].w;
+
+    function renderRankedWordSelector() {
+      const container = $("ranked-words-grid");
+      if (!container) return;
+      const userPBs = getRankedPBs();
+      container.innerHTML = RANKED_WORDS.map(rw => {
+        const isActive = rw.id === activeRankedWordId;
+        const pb = userPBs[rw.id];
+        const pbText = pb ? `👑 ${pb.time.toFixed(2)}s` : `<span style="color:var(--mute)">Belum ada</span>`;
+        return `
+          <div class="rws-item ${isActive ? 'active' : ''}" data-word-id="${rw.id}" role="button" tabindex="0" title="${rw.w} (${esc(rw.desc)})">
+            <div class="rws-item-top">
+              <span class="rws-flag">${rw.flag}</span>
+              <span class="rws-badge">${rw.len}h</span>
+            </div>
+            <div class="rws-name">${esc(rw.shortName)}</div>
+            <div class="rws-sub">${esc(rw.shortDesc || rw.desc)}</div>
+            <div class="rws-pb-badge">${pbText}</div>
+          </div>
+        `;
+      }).join("");
+
+      container.querySelectorAll(".rws-item").forEach(item => {
+        item.onclick = () => selectRankedWord(item.dataset.wordId, true);
+      });
+    }
+
+    function renderLeaderboardFilterBars() {
+      const bars = [ $("page-lb-filter-bar"), $("modal-lb-filter-bar") ];
+      bars.forEach(bar => {
+        if (!bar) return;
+        bar.innerHTML = RANKED_WORDS.map(rw => {
+          const isActive = rw.id === activeRankedWordId;
+          return `
+            <button type="button" class="lb-filter-btn ${isActive ? 'active' : ''}" data-word-id="${rw.id}">
+              <span>${rw.flag}</span>
+              <span>${esc(rw.shortName)}</span>
+              <span class="btn-len">${rw.len}h</span>
+            </button>
+          `;
+        }).join("");
+
+        bar.querySelectorAll(".lb-filter-btn").forEach(btn => {
+          btn.onclick = () => {
+            const wId = btn.dataset.wordId;
+            loadLeaderboard(wId);
+          };
+        });
+      });
+    }
+
+    function renderUserMultiPBs() {
+      const container = $("user-multi-pbs-container");
+      if (!container) return;
+      const userPBs = getRankedPBs();
+      container.innerHTML = RANKED_WORDS.map(rw => {
+        const pb = userPBs[rw.id];
+        const scoreHtml = pb
+          ? `<span class="score">${pb.time.toFixed(2)}s <small style="font-weight:400;color:var(--dim);font-size:.7rem">(${pb.cps.toFixed(1)} cps)</small></span>`
+          : `<span style="color:var(--mute);font-size:.74rem">Belum ada rekor</span>`;
+        return `
+          <div class="user-pb-row">
+            <div class="name">
+              <span>${rw.flag}</span>
+              <b>${esc(rw.shortName)}</b>
+              <span style="font-size:.66rem;color:var(--dim);background:rgba(255,255,255,.06);padding:1px 5px;border-radius:4px">${rw.len}h</span>
+            </div>
+            <div>${scoreHtml}</div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function selectRankedWord(id, playNow = false) {
+      activeRankedWordId = id;
+      const rw = getActiveRankedWord();
+      currentAppMode = "ranked";
+      setTarget(rw.w, false);
+      updateRankedBanner();
+      renderRankedWordSelector();
+      renderLeaderboardFilterBars();
+      loadLeaderboard(id);
+      if (playNow) {
+        toast(`🏆 Kata Ranked dipilih: ${rw.title} (${rw.len} huruf)`);
+        focusBox(true);
+      }
+    }
 
     function setMode(m) {
-      if (m === "ranked" && target !== RANKED_WORD) {
-        setTarget(RANKED_WORD, false);
-        toast("🏆 Mode Ranked: skor masuk leaderboard");
-      } else if (m === "practice" && target === RANKED_WORD) {
-        setTarget(lastPracticeWord, false);
-        toast("⚡ Mode Latihan: skor tidak masuk leaderboard");
+      currentAppMode = m;
+      const rw = getActiveRankedWord();
+      if (m === "ranked") {
+        if (!isRankedWord(target)) {
+          setTarget(rw.w, false);
+        }
+        toast(`🏆 Mode Ranked: ${rw.title} (${rw.len} huruf)`);
+      } else if (m === "practice") {
+        if (isRankedWord(target)) {
+          setTarget(lastPracticeWord, false);
+        }
+        toast("⚡ Mode Latihan: bebas memilih kata apa saja");
       }
+      updateRankedBanner();
+      renderRankedWordSelector();
+      renderLeaderboardFilterBars();
+      loadLeaderboard(activeRankedWordId);
     }
     document.querySelectorAll(".mode-seg").forEach(b => b.onclick = () => setMode(b.dataset.mode));
 
     function updateRankedBanner() {
-      const isRanked = (target === RANKED_WORD);
-      if (!isRanked) lastPracticeWord = target;
+      const activeRW = findRankedWordByText(target) || getActiveRankedWord();
+      const isTargetRanked = isRankedWord(target);
+      const isRankedMode = (currentAppMode === "ranked") || isTargetRanked;
 
-      document.body.classList.toggle("mode-ranked", isRanked);
+      if (!isRankedMode) lastPracticeWord = target;
+
+      document.body.classList.toggle("mode-ranked", isRankedMode);
       document.querySelectorAll(".mode-seg").forEach(b => {
-        const on = (b.dataset.mode === "ranked") === isRanked;
+        const on = (b.dataset.mode === "ranked") === isRankedMode;
         b.classList.toggle("active", on);
         b.setAttribute("aria-selected", on);
       });
 
       const b = $("ranked-banner"), pickerEl = document.querySelector(".picker"), btnNext = $("btn-next"), actionsEl = document.querySelector(".actions"), hintEl = $("hint-text");
-      if (pickerEl) pickerEl.style.display = isRanked ? "none" : "";
-      if (btnNext) btnNext.style.display = isRanked ? "none" : "";
-      if (actionsEl) actionsEl.classList.toggle("single-btn", isRanked);
-      if (hintEl) hintEl.innerHTML = isRanked ? "<kbd>Tab</kbd> / <kbd>Enter</kbd> ulangi · Semua 85 huruf harus benar" : "<kbd>Tab</kbd> / <kbd>Enter</kbd> ulangi · <kbd>Esc</kbd> pilih kata";
+      if (pickerEl) pickerEl.style.display = isRankedMode ? "none" : "";
+      if (btnNext) btnNext.style.display = isRankedMode ? "none" : "";
+      if (actionsEl) actionsEl.classList.toggle("single-btn", isRankedMode);
+
+      if (hintEl) {
+        hintEl.innerHTML = isRankedMode
+          ? `<kbd>Tab</kbd> / <kbd>Enter</kbd> ulangi · Semua ${activeRW.len} huruf harus benar (Ranked)`
+          : `<kbd>Tab</kbd> / <kbd>Enter</kbd> ulangi · <kbd>Esc</kbd> pilih kata`;
+      }
       if (!b) return;
 
-      if (isRanked) {
+      if (isRankedMode) {
         b.className = "ranked-banner is-ranked";
-        let recordText = "Selesaikan 85 huruf (typo boleh diperbaiki) untuk masuk leaderboard";
+        const userPBs = getRankedPBs();
+        const currentPB = userPBs[activeRW.id];
+        let recordText = `Selesaikan ${activeRW.len} huruf untuk masuk leaderboard kategori ini`;
         let delBtn = "";
-        if (currentUser && userRankedPB) {
-          recordText = `👑 Rekor Anda: <b>${userRankedPB.time.toFixed(2)}s</b> (${userRankedPB.cps.toFixed(1)} CPS)`;
-          delBtn = `<button class="chip-btn danger" id="btn-banner-delete-pb" type="button">🗑️ Hapus rekor</button>`;
-        } else if (!currentUser) {
-          recordText = "Masuk akun agar skor Anda tercatat di leaderboard";
+        if (currentPB) {
+          recordText = `👑 Rekor Anda di kata ini: <b>${currentPB.time.toFixed(2)}s</b> (${currentPB.cps.toFixed(1)} CPS)`;
+          delBtn = `<button class="chip-btn danger" id="btn-banner-delete-pb" type="button">🗑️ Reset rekor</button>`;
+        } else {
+          recordText = `Selesaikan tanpa typo untuk mencatatkan rekor Anda di Leaderboard Global`;
         }
-        b.innerHTML = `<div class="ranked-tag"><span style="font-size:1.25rem">🏆</span><div><b style="color:var(--gold);display:block;font-size:.88rem">Mode Ranked · 85 huruf</b><span style="font-size:.72rem;color:var(--dim)">${recordText}</span></div></div><div class="banner-actions"><button class="chip-btn gold" id="btn-banner-lb" type="button">🏆 Leaderboard</button>${delBtn}</div>`;
-        $("btn-banner-lb").onclick = openLeaderboard;
+        b.innerHTML = `<div class="ranked-tag"><span style="font-size:1.25rem">🏆</span><div><div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap"><b style="color:var(--gold);display:block;font-size:.88rem">Mode Ranked · ${activeRW.title}</b><span class="ranked-pill-tier">${activeRW.badge}</span></div><span style="font-size:.72rem;color:var(--dim)">${recordText}</span></div></div><div class="banner-actions"><button class="chip-btn gold" id="btn-banner-lb" type="button">🏆 Leaderboard</button>${delBtn}</div>`;
+        $("btn-banner-lb").onclick = () => {
+          loadLeaderboard(activeRW.id);
+          openLeaderboard();
+        };
         const d = $("btn-banner-delete-pb"); if (d) d.onclick = promptDeleteRankedRecord;
       } else {
         b.className = "ranked-banner";
-        b.innerHTML = `<div class="ranked-tag"><span style="font-size:1.2rem">⚡</span><div><b style="display:block;font-size:.86rem;color:var(--mint)">Mode Latihan</b><span style="font-size:.72rem;color:var(--dim)">Skor tidak masuk leaderboard. Pilih kata sesuka Anda.</span></div></div><div class="banner-actions"><button class="chip-btn gold" id="btn-enter-ranked" type="button">🏆 Coba Ranked</button></div>`;
+        b.innerHTML = `<div class="ranked-tag"><span style="font-size:1.2rem">⚡</span><div><b style="display:block;font-size:.86rem;color:var(--mint)">Mode Latihan</b><span style="font-size:.72rem;color:var(--dim)">Skor tidak masuk leaderboard. Pilih kata sesuka Anda.</span></div></div><div class="banner-actions"><button class="chip-btn gold" id="btn-enter-ranked" type="button">🏆 Coba Mode Ranked</button></div>`;
         $("btn-enter-ranked").onclick = () => setMode("ranked");
       }
     }
@@ -2042,11 +2604,16 @@
       closeAll(); $("m-auth").classList.add("on");
       setTimeout(() => $("auth-username").focus(), 120);
     }
-    function openUserModal() { if (!currentUser) { openAuth("login"); return } closeAll(); $("m-user").classList.add("on") }
+    function openUserModal() { 
+      if (!currentUser) { openAuth("login"); return; } 
+      renderUserMultiPBs(); 
+      closeAll(); 
+      $("m-user").classList.add("on"); 
+    }
     function openLeaderboard() {
       const sec = $("section-leaderboard");
       if (sec) sec.scrollIntoView({ behavior: "smooth", block: "start" });
-      loadLeaderboard();
+      loadLeaderboard(activeRankedWordId);
     }
 
     async function initAuth() {
@@ -2137,40 +2704,66 @@
     }
 
     async function fetchUserRankedPB() {
-      if (!sb || !currentUser) return;
-      try {
-        const { data } = await sb.from("ranked_leaderboard").select("time, cps, wpm, acc, typos").eq("user_id", currentUser.id).maybeSingle();
-        if (data) {
-          userRankedPB = { time: parseFloat(data.time), cps: parseFloat(data.cps), wpm: parseInt(data.wpm, 10), acc: parseInt(data.acc, 10) };
-          $("user-pb-time").textContent = userRankedPB.time.toFixed(2) + "s";
-          $("user-pb-cps").textContent = userRankedPB.cps.toFixed(1) + " cps";
-          $("btn-delete-ranked-pb").hidden = false;
-        } else {
-          userRankedPB = null;
-          $("user-pb-time").textContent = "-"; $("user-pb-cps").textContent = "-";
-          $("btn-delete-ranked-pb").hidden = true;
-        }
-      } catch (e) { console.warn("fetchUserRankedPB error", e) }
+      if (sb && currentUser) {
+        try {
+          const { data, error } = await sb.from("ranked_leaderboard")
+            .select("word_id, time, cps, wpm, acc, typos")
+            .eq("user_id", currentUser.id);
+          if (data && !error) {
+            const allPBs = getRankedPBs();
+            data.forEach(row => {
+              if (row.word_id) {
+                allPBs[row.word_id] = {
+                  time: parseFloat(row.time),
+                  cps: parseFloat(row.cps),
+                  wpm: row.wpm,
+                  acc: row.acc,
+                  typos: row.typos
+                };
+              }
+            });
+            store.set(RANKED_PBS_KEY, JSON.stringify(allPBs));
+          }
+        } catch (e) { console.warn("fetchUserRankedPB error:", e); }
+      }
+      const userPBs = getRankedPBs();
+      const rw = getActiveRankedWord();
+      userRankedPB = userPBs[rw.id] || null;
+      renderUserMultiPBs();
+      renderRankedWordSelector();
     }
     function promptDeleteRankedRecord() {
-      if (!sb || !currentUser) { toast("Silakan login terlebih dahulu."); return }
-      if (!userRankedPB) { toast("Anda belum memiliki rekor di Mode Ranked."); return }
-      closeAll(); $("m-confirm").classList.add("on");
+      const rw = findRankedWordByText(target) || getActiveRankedWord();
+      const userPBs = getRankedPBs();
+      if (!userPBs[rw.id]) {
+        toast(`Anda belum memiliki rekor di kategori ${rw.shortName}.`);
+        return;
+      }
+      closeAll();
+      $("m-confirm").classList.add("on");
     }
     async function executeDeleteRankedRecord() {
-      if (!sb || !currentUser) return;
+      const rw = findRankedWordByText(target) || getActiveRankedWord();
       const btn = $("btn-confirm-delete-action");
       btn.disabled = true; btn.textContent = "Menghapus...";
       try {
-        const { error } = await sb.from("ranked_leaderboard").delete().eq("user_id", currentUser.id);
-        if (error) { console.error("Gagal menghapus rekor:", error); toast("Gagal menghapus rekor: " + error.message); return }
-        userRankedPB = null;
-        $("user-pb-time").textContent = "-"; $("user-pb-cps").textContent = "-";
-        $("btn-delete-ranked-pb").hidden = true;
+        deleteRankedPB(rw.id);
         const all = pbs();
-        if (all[RANKED_WORD]) { delete all[RANKED_WORD]; store.set(PB_KEY, JSON.stringify(all)); $("info-pb").textContent = "" }
-        closeAll(); updateRankedBanner(); loadLeaderboard();
-        toast("🗑️ Rekor ranked Anda berhasil dihapus!");
+        if (all[rw.w]) { delete all[rw.w]; store.set(PB_KEY, JSON.stringify(all)); $("info-pb").textContent = ""; }
+        if (currentUser && sb) {
+          try {
+            await sb.from("ranked_leaderboard")
+              .delete()
+              .eq("user_id", currentUser.id)
+              .eq("word_id", rw.id);
+          } catch(e) { console.warn("Delete remote error:", e); }
+        }
+        closeAll();
+        updateRankedBanner();
+        renderRankedWordSelector();
+        renderUserMultiPBs();
+        await loadLeaderboard(rw.id);
+        toast(`🗑️ Rekor ranked ${rw.shortName} berhasil direset!`);
       } catch (err) {
         console.error("Delete record err:", err);
         toast("Terjadi kesalahan saat menghapus rekor.");
@@ -2179,62 +2772,170 @@
       }
     }
     async function submitRankedScore(sc) {
-      if (!sb || !currentUser) return;
-      if (sc.time < 3.0 || sc.cps > 25.0) { toast("⚠️ Skor di luar batas wajar pengetikan manusia."); return }
-      if (userRankedPB && sc.time >= userRankedPB.time) {
-        toast(`✅ Skor ranked ${sc.time}s selesai (rekor terbaik Anda: ${userRankedPB.time.toFixed(2)}s)`);
-        return;
+      if (sc.time < 3.0 || sc.cps > 25.0) { toast("⚠️ Skor di luar batas wajar pengetikan manusia."); return; }
+      const rw = findRankedWordByText(target) || getActiveRankedWord();
+      const wordId = rw.id;
+      const isNewBest = saveRankedPB(wordId, sc);
+
+      if (sb && currentUser) {
+        try {
+          const payload = {
+            user_id: currentUser.id,
+            username: currentUser.username,
+            word_id: wordId,
+            time: sc.time,
+            cps: sc.cps,
+            wpm: sc.wpm,
+            acc: sc.acc,
+            typos: sc.typos,
+            updated_at: new Date().toISOString()
+          };
+          const { error } = await sb.from("ranked_leaderboard").upsert(payload, { onConflict: "user_id,word_id" });
+          if (error) console.error("Supabase upsert error:", error);
+        } catch(e) { console.warn("Supabase upsert fallback:", e); }
       }
-      try {
-        const payload = { user_id: currentUser.id, username: currentUser.username, time: sc.time, cps: sc.cps, wpm: sc.wpm, acc: sc.acc, typos: sc.typos, updated_at: new Date().toISOString() };
-        const { error } = await sb.from("ranked_leaderboard").upsert(payload, { onConflict: "user_id" });
-        if (error) {
-          if (error.code === "PGRST205") toast("⚠️ Tabel ranked_leaderboard belum dibuat di Supabase!");
-          else { console.error("Ranked submit error:", error); toast("Gagal menyimpan rekor: " + error.message) }
-        } else {
-          userRankedPB = { time: sc.time, cps: sc.cps, wpm: sc.wpm, acc: sc.acc };
-          $("user-pb-time").textContent = sc.time.toFixed(2) + "s";
-          $("user-pb-cps").textContent = sc.cps.toFixed(1) + " cps";
-          $("btn-delete-ranked-pb").hidden = false;
-          toast(`🏆 REKOR RANKED BARU! ${sc.time}s masuk ke Leaderboard!`);
-          updateRankedBanner(); loadLeaderboard();
-        }
-      } catch (e) { console.error("Submit score err:", e) }
+
+      if (isNewBest) {
+        toast(`🏆 REKOR BARU (${rw.len} HURUF)! ${sc.time}s masuk ke Leaderboard ${rw.shortName}!`);
+      } else {
+        toast(`✅ Skor ${rw.shortName} ${sc.time}s selesai.`);
+      }
+      updateRankedBanner();
+      renderRankedWordSelector();
+      renderUserMultiPBs();
+      await loadLeaderboard(wordId);
     }
 
-    async function loadLeaderboard() {
+    async function loadLeaderboard(wordId) {
+      if (wordId) activeRankedWordId = wordId;
+      else wordId = activeRankedWordId;
+
+      const rw = getActiveRankedWord();
+
+      // Update Subtitles & Info
+      const pageSub = $("page-lb-subtitle");
+      if (pageSub) pageSub.innerHTML = `Kata monster: <b>${rw.title}</b> (${rw.len} huruf) · ${rw.desc}`;
+      const modalTitle = $("modal-lb-title");
+      if (modalTitle) modalTitle.textContent = rw.title;
+      const modalDesc = $("modal-lb-desc");
+      if (modalDesc) modalDesc.textContent = `${rw.flag} ${rw.len} huruf · ${rw.desc}`;
+
+      // Update Filter buttons active state
+      document.querySelectorAll(".lb-filter-btn").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.wordId === activeRankedWordId);
+      });
+
       const listEl = $("lb-list"), pageListEl = $("page-lb-list");
-      if (listEl) listEl.innerHTML = '<div class="empty">Memuat papan peringkat...</div>';
-      if (pageListEl) pageListEl.innerHTML = '<div class="empty">Memuat papan peringkat...</div>';
-      $("lb-user-footer").hidden = true; $("page-lb-user-footer").hidden = true;
-      $("lb-target-shortcut").hidden = (target === RANKED_WORD);
-      const setBoth = h => { if (listEl) listEl.innerHTML = h; if (pageListEl) pageListEl.innerHTML = h };
-      if (!sb) { setBoth('<div class="empty">Koneksi Supabase belum siap.</div>'); return }
-      try {
-        const { data, error } = await sb.from("ranked_leaderboard").select("user_id, username, time, cps, acc, updated_at").order("time", { ascending: true }).limit(50);
-        if (error) {
-          setBoth(error.code === "PGRST205" ? `<div style="padding:14px;background:rgba(255,93,108,.1);border:1px solid rgba(255,93,108,.3);border-radius:12px;font-size:.82rem;line-height:1.5"><b style="color:var(--red)">⚠️ Tabel belum dibuat di Supabase</b><br>Tabel <code>ranked_leaderboard</code> belum ada. Jalankan script <code>supabase_leaderboard.sql</code> di Supabase SQL Editor.</div>` : `<div class="empty">Gagal memuat: ${esc(error.message)}</div>`);
-          return;
+      const setBoth = h => { if (listEl) listEl.innerHTML = h; if (pageListEl) pageListEl.innerHTML = h; };
+
+      setBoth('<div class="empty">Memuat papan peringkat...</div>');
+
+      let items = [];
+      if (sb) {
+        try {
+          const { data, error } = await sb.from("ranked_leaderboard")
+            .select("user_id, username, time, cps, wpm, acc, typos, updated_at")
+            .eq("word_id", activeRankedWordId)
+            .order("time", { ascending: true })
+            .order("cps", { ascending: false })
+            .limit(100);
+
+          if (error) {
+            console.warn("Supabase fetch error:", error);
+          } else if (data) {
+            items = data.map(row => ({
+              user_id: row.user_id,
+              username: row.username || "Pemain",
+              time: parseFloat(row.time),
+              cps: parseFloat(row.cps),
+              acc: row.acc,
+              isMe: currentUser ? (currentUser.id === row.user_id) : false
+            }));
+          }
+        } catch (err) {
+          console.error("Leaderboard query error:", err);
         }
-        if (!data || data.length === 0) { setBoth('<div class="empty">Belum ada pemain di peringkat ini.<br>Jadilah yang pertama menaklukkan kata 85 huruf ini!</div>'); return }
-        let myRank = -1;
-        const html = data.map((item, idx) => {
-          const rank = idx + 1, isMe = currentUser && currentUser.id === item.user_id;
-          if (isMe) myRank = rank;
-          let badge = `#${rank}`, cls = "lb-item";
-          if (rank === 1) { badge = "🥇 1"; cls += " top-1" } else if (rank === 2) { badge = "🥈 2"; cls += " top-2" } else if (rank === 3) { badge = "🥉 3"; cls += " top-3" }
-          if (isMe) cls += " is-me";
-          const nm = esc(item.username);
-          return `<div class="${cls}"><span class="lb-pos">${badge}</span><span class="lb-name" title="${nm}">${nm}${isMe ? '<span class="me-badge">Anda</span>' : ''}</span><span class="lb-time">${Number(item.time).toFixed(2)}s</span><span class="lb-cps">${Number(item.cps).toFixed(1)}</span><span class="lb-acc">${esc(item.acc)}%</span></div>`;
-        }).join("");
-        setBoth(html);
-        if (currentUser && userRankedPB) {
-          const scoreText = `${userRankedPB.time.toFixed(2)}s · ${userRankedPB.cps.toFixed(1)} cps · ${userRankedPB.acc}%`;
-          const rankText = myRank > 0 ? `Peringkat #${myRank}` : "Di luar Top 50";
-          $("lb-user-footer").hidden = false; $("lb-my-score").textContent = scoreText; $("lb-my-rank").textContent = rankText;
-          $("page-lb-user-footer").hidden = false; $("page-lb-my-score").textContent = scoreText; $("page-lb-my-rank").textContent = rankText;
+      }
+
+      const userPBs = getRankedPBs();
+      const currentPB = userPBs[activeRankedWordId];
+
+      // If user is guest/local and has PB, inject them into the preview if not already in items
+      if (currentPB && !items.some(x => x.isMe)) {
+        const guestName = currentUser ? currentUser.username : "Anda (Lokal)";
+        items.push({
+          username: guestName,
+          time: currentPB.time,
+          cps: currentPB.cps,
+          acc: currentPB.acc,
+          isMe: true
+        });
+        items.sort((a, b) => a.time - b.time);
+      }
+
+      if (items.length === 0) {
+        setBoth(`<div class="empty">Belum ada rekor untuk kata <b>${rw.shortName}</b>.<br><span style="font-size:.76rem;color:var(--dim)">Jadilah yang pertama mencatatkan rekor di Leaderboard Global!</span></div>`);
+        const footerMe = $("lb-user-footer"), pageFooterMe = $("page-lb-user-footer");
+        if (footerMe) footerMe.hidden = true;
+        if (pageFooterMe) pageFooterMe.hidden = true;
+        return;
+      }
+
+      let myRank = -1;
+      const html = items.map((item, idx) => {
+        const rank = idx + 1;
+        const isMe = item.isMe || (currentUser && currentUser.username === item.username);
+        if (isMe) myRank = rank;
+
+        let badge = `#${rank}`, cls = "lb-item";
+        if (rank === 1) { badge = "🥇 1"; cls += " top-1"; }
+        else if (rank === 2) { badge = "🥈 2"; cls += " top-2"; }
+        else if (rank === 3) { badge = "🥉 3"; cls += " top-3"; }
+        if (isMe) cls += " is-me";
+
+        const nm = esc(item.username);
+        return `<div class="${cls}">
+          <span class="lb-pos">${badge}</span>
+          <span class="lb-name" title="${nm}">${nm}${isMe ? '<span class="me-badge">Anda</span>' : ''}</span>
+          <span class="lb-time">${Number(item.time).toFixed(2)}s</span>
+          <span class="lb-cps">${Number(item.cps).toFixed(1)}</span>
+          <span class="lb-acc">${esc(item.acc)}%</span>
+        </div>`;
+      }).join("");
+
+      setBoth(html);
+
+      // Footers
+      const footerMe = $("lb-user-footer"), pageFooterMe = $("page-lb-user-footer");
+      if (currentPB || myRank > 0) {
+        const timeVal = currentPB ? currentPB.time : (items.find(x => x.isMe)?.time || 0);
+        const cpsVal = currentPB ? currentPB.cps : (items.find(x => x.isMe)?.cps || 0);
+        const accVal = currentPB ? currentPB.acc : (items.find(x => x.isMe)?.acc || 100);
+        const scoreText = `${Number(timeVal).toFixed(2)}s · ${Number(cpsVal).toFixed(1)} cps · ${accVal}%`;
+        const rankText = myRank > 0 ? `Peringkat #${myRank}` : "Top 100";
+        if (footerMe) {
+          footerMe.hidden = false;
+          $("lb-my-score").textContent = scoreText;
+          $("lb-my-rank").textContent = rankText;
         }
-      } catch (err) { setBoth(`<div class="empty">Terjadi kesalahan: ${esc(err.message || err)}</div>`) }
+        if (pageFooterMe) {
+          pageFooterMe.hidden = false;
+          $("page-lb-my-score").textContent = scoreText;
+          $("page-lb-my-rank").textContent = rankText;
+        }
+      } else {
+        if (footerMe) footerMe.hidden = true;
+        if (pageFooterMe) pageFooterMe.hidden = true;
+      }
+
+      // Shortcut state
+      const isTargetActive = (target === rw.w);
+      const shortcut = $("lb-target-shortcut");
+      if (shortcut) {
+        shortcut.hidden = isTargetActive;
+        const txt = $("lb-target-shortcut-text");
+        if (txt) txt.textContent = `🎯 Mainkan kata "${rw.shortName}" di Mode Ranked`;
+      }
     }
 
     /* Target & timer */
@@ -2242,16 +2943,23 @@
 
     function setTarget(w, autoFocus = false) {
       target = w.trim().toLowerCase();
+      const rw = findRankedWordByText(target);
+      if (rw) {
+        activeRankedWordId = rw.id;
+      }
       $("info-len").textContent = target.length + " huruf";
       const p = PRESETS.find(x => x.w === target);
-      $("info-desc").textContent = p ? p.d : "Kata pilihan sendiri";
+      $("info-desc").textContent = rw ? `${rw.flag} ${rw.desc}` : (p ? p.d : "Kata pilihan sendiri");
       const pb = pbs()[target];
       $("info-pb").textContent = pb ? `👑 Rekor ${pb.time.toFixed(2)}s · ${pb.cps.toFixed(1)} cps` : "";
       inp.maxLength = target.length;
       document.querySelectorAll(".chip").forEach((c, i) => c.classList.toggle("active", PRESETS[i].w === target));
       reset(autoFocus);
       updateRankedBanner();
-      $("lb-target-shortcut").hidden = (target === RANKED_WORD);
+      renderRankedWordSelector();
+      const curRW = getActiveRankedWord();
+      const shortcut = $("lb-target-shortcut");
+      if (shortcut) shortcut.hidden = (target === curRW.w);
     }
     let lastKeyTime = 0;
     function reset(autoFocus = false) {
@@ -2420,21 +3128,51 @@
       history_();
       setTimeout(() => $("result").scrollIntoView({ behavior: "smooth", block: "center" }), 80);
 
-      const isRanked = (target === RANKED_WORD) && (typed === target), rankedBox = $("r-ranked-status");
-      if (isRanked) {
+      const activeRW = findRankedWordByText(target);
+      const isRanked = (currentAppMode === "ranked" || activeRW) && (typed === target);
+      const rankedBox = $("r-ranked-status");
+      if (isRanked && activeRW) {
         const scoreObj = { time: parseFloat(time), cps: parseFloat(cps), wpm, acc, typos };
+        const userPBs = getRankedPBs();
+        const prevPB = userPBs[activeRW.id];
+        const isBetter = (!prevPB || scoreObj.time < prevPB.time);
+        const prevBest = prevPB ? prevPB.time.toFixed(2) : null;
+        submitRankedScore(scoreObj);
+
         if (currentUser) {
-          const isBetter = (!userRankedPB || scoreObj.time < userRankedPB.time);
-          const prevBest = userRankedPB ? userRankedPB.time.toFixed(2) : null;
-          submitRankedScore(scoreObj);
-          rankedBox.innerHTML = `<div class="r-ranked-box ${isBetter ? 'new-record' : ''}"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><div><b style="color:var(--gold)">🏆 Mode Ranked selesai!</b><div style="font-size:.76rem;color:var(--dim)">${isBetter ? '🎉 Rekor baru dikirim ke Leaderboard Global!' : 'Rekor terbaik Anda: ' + prevBest + 's'}</div></div><button class="chip-btn gold" id="btn-result-open-lb" type="button" style="min-height:34px;font-size:.78rem">Leaderboard</button></div></div>`;
-          $("btn-result-open-lb").onclick = openLeaderboard;
+          rankedBox.innerHTML = `<div class="r-ranked-box ${isBetter ? 'new-record' : ''}">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
+              <div>
+                <b style="color:var(--gold)">🏆 Mode Ranked · ${activeRW.title} (${activeRW.len} huruf)!</b>
+                <div style="font-size:.76rem;color:var(--dim)">
+                  ${isBetter ? `🎉 Rekor baru berhasil dikirim ke Leaderboard Global!` : 'Rekor terbaik Anda: ' + prevBest + 's'}
+                </div>
+              </div>
+              <button class="chip-btn gold" id="btn-result-open-lb" type="button" style="min-height:34px;font-size:.78rem">🏆 Lihat Leaderboard</button>
+            </div>
+          </div>`;
+          $("btn-result-open-lb").onclick = () => {
+            loadLeaderboard(activeRW.id);
+            openLeaderboard();
+          };
         } else {
           pendingRankedScore = scoreObj;
-          rankedBox.innerHTML = `<div class="r-ranked-box new-record"><b style="color:var(--gold)">🏆 Mode Ranked selesai! (${time}s · ${cps} CPS)</b><div style="font-size:.78rem;color:var(--dim);margin:4px 0 8px">Masuk atau daftar untuk mencatat nama dan rekor Anda di <b>Leaderboard Global</b>.</div><button class="btn primary" id="btn-result-auth" type="button" style="min-height:44px;font-size:.88rem;width:100%">👤 Masuk / Daftar Sekarang</button></div>`;
+          rankedBox.innerHTML = `<div class="r-ranked-box new-record">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
+              <div>
+                <b style="color:var(--gold)">🏆 Selesai ${activeRW.title} (${time}s · ${cps} CPS)!</b>
+                <div style="font-size:.76rem;color:var(--dim);margin-top:2px">
+                  Masuk atau daftar untuk mencatat nama dan rekor Anda di <b>Leaderboard Global</b>.
+                </div>
+              </div>
+              <button class="btn primary" id="btn-result-auth" type="button" style="min-height:36px;padding:0 14px;font-size:.82rem">👤 Masuk / Daftar</button>
+            </div>
+          </div>`;
           $("btn-result-auth").onclick = () => openAuth("register");
         }
-      } else rankedBox.innerHTML = "";
+      } else {
+        rankedBox.innerHTML = "";
+      }
 
       playFinishSound();
       if (pb) toast(`🎉 Rekor baru: ${time} detik!`);
@@ -2449,7 +3187,7 @@
 
     /* Presets */
     $("chips").innerHTML = PRESETS.map(p => {
-      const r = p.w === RANKED_WORD;
+      const r = isRankedWord(p.w);
       return `<button class="chip${r ? ' ranked-chip' : ''}" title="${esc(p.d)}">${r ? '🏆 ' : ''}${esc(p.l)}<b>${p.w.length}</b></button>`;
     }).join("");
     document.querySelectorAll(".chip").forEach((c, i) => c.addEventListener("click", () => setTarget(PRESETS[i].w)));
@@ -2549,25 +3287,31 @@
     $("btn-sound").onclick = () => { sound = !sound; store.set(SND_KEY, sound ? "1" : "0"); sndUI(); toast(sound ? "🔊 Suara aktif" : "🔇 Suara mati") };
 
     $("btn-open-lb").onclick = openLeaderboard;
-    $("btn-refresh-lb").onclick = loadLeaderboard;
-    $("btn-refresh-page-lb").onclick = () => { loadLeaderboard(); toast("🔄 Leaderboard diperbarui!") };
-    $("btn-delete-ranked-pb").onclick = promptDeleteRankedRecord;
-    $("btn-delete-page-lb-row").onclick = promptDeleteRankedRecord;
-    $("btn-delete-modal-lb-row").onclick = promptDeleteRankedRecord;
-    $("btn-confirm-delete-action").onclick = executeDeleteRankedRecord;
-    $("btn-jump-ranked").onclick = () => { closeAll(); setMode("ranked") };
-    $("btn-auth-trigger").onclick = () => { currentUser ? openUserModal() : openAuth("login") };
-    $("tab-login").onclick = () => switchAuthTab("login");
-    $("tab-register").onclick = () => switchAuthTab("register");
-    $("btn-auth-submit").onclick = e => { e.preventDefault(); handleAuthSubmit() };
-    $("btn-logout").onclick = handleLogout;
-    $("btn-profile-to-ranked").onclick = () => { closeAll(); setMode("ranked") };
-    $("btn-profile-to-lb").onclick = () => { closeAll(); openLeaderboard() };
+    $("btn-refresh-lb").onclick = () => loadLeaderboard(activeRankedWordId);
+    $("btn-refresh-page-lb").onclick = () => { loadLeaderboard(activeRankedWordId); toast("🔄 Leaderboard diperbarui!") };
+    const btnPlayPage = $("btn-page-lb-play-current");
+    if (btnPlayPage) btnPlayPage.onclick = () => {
+      selectRankedWord(activeRankedWordId, true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+    const onClk = (id, fn) => { const el = $(id); if (el) el.onclick = fn; };
+    onClk("btn-delete-ranked-pb", promptDeleteRankedRecord);
+    onClk("btn-delete-page-lb-row", promptDeleteRankedRecord);
+    onClk("btn-delete-modal-lb-row", promptDeleteRankedRecord);
+    onClk("btn-confirm-delete-action", executeDeleteRankedRecord);
+    onClk("btn-jump-ranked", () => { closeAll(); selectRankedWord(activeRankedWordId, true); });
+    onClk("btn-auth-trigger", () => { currentUser ? openUserModal() : openAuth("login"); });
+    onClk("tab-login", () => switchAuthTab("login"));
+    onClk("tab-register", () => switchAuthTab("register"));
+    onClk("btn-auth-submit", e => { e.preventDefault(); handleAuthSubmit(); });
+    onClk("btn-logout", handleLogout);
+    onClk("btn-profile-to-ranked", () => { closeAll(); setMode("ranked"); });
+    onClk("btn-profile-to-lb", () => { closeAll(); openLeaderboard(); });
 
     document.addEventListener("keydown", e => {
       if (e.key === "Escape") {
         if (modalOpen()) closeAll();
-        else if (target === RANKED_WORD) toast("🔒 Sedang di Mode Ranked. Pindah ke tab Latihan untuk memilih kata lain.");
+        else if (isRankedWord(target)) toast("🔒 Sedang di Mode Ranked. Pindah ke tab Latihan atau pilih kata monster lain di atas.");
         else openCatalog();
         return;
       }
@@ -2580,9 +3324,12 @@
     /* Init */
     if (store.get(SND_KEY) !== null) sound = store.get(SND_KEY) === "1";
     sndUI();
+    renderRankedWordSelector();
+    renderLeaderboardFilterBars();
+    renderUserMultiPBs();
     setTarget(target, false);
     initAuth();
-    loadLeaderboard();
+    loadLeaderboard(activeRankedWordId);
   </script>
 </body>
 
