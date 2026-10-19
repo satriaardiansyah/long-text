@@ -458,7 +458,7 @@
 
     .rws-grid {
       display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(126px, 1fr));
       gap: 6px;
       width: 100%;
       box-sizing: border-box;
@@ -634,7 +634,7 @@
     @media (min-width: 700px) {
       .lb-card .lb-filter-bar {
         display: grid;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
         overflow-x: visible;
         padding-bottom: 4px;
       }
@@ -1908,7 +1908,7 @@
       <div class="mode-seg-wrap" role="tablist" aria-label="Pilih mode">
         <button class="mode-seg" data-mode="practice" role="tab" type="button">⚡ Latihan<small>Bebas, tanpa
             peringkat</small></button>
-        <button class="mode-seg" data-mode="ranked" role="tab" type="button">🏆 Ranked<small>5 Kata Resmi, leaderboard</small></button>
+        <button class="mode-seg" data-mode="ranked" role="tab" type="button">🏆 Ranked<small id="mode-seg-ranked-sub">5 Kata Resmi, leaderboard</small></button>
       </div>
     </div>
   </div>
@@ -1930,7 +1930,7 @@
           <div class="rws-title">
             <span>🏆</span> <span>Pilihan Kata Monster Ranked</span>
           </div>
-          <span class="rws-pill">5 Kata Resmi</span>
+          <span class="rws-pill" id="ranked-count-pill">5 Kata Resmi</span>
         </div>
         <div class="rws-grid" id="ranked-words-grid"></div>
       </section>
@@ -2305,6 +2305,18 @@
         shortDesc: "Debu Silika Paru",
         desc: "Penyakit paru akibat debu silika",
         flag: "🌋"
+      },
+      {
+        id: "proletariat",
+        w: "internasionalismeproletariat",
+        shortName: "Internasionalisme…",
+        title: "Internasionalismeproletariat…",
+        len: 32,
+        tag: "32 huruf",
+        badge: "Tier Hard 🔥",
+        shortDesc: "Ideologi Politik",
+        desc: "Ideologi Politik antar bangsa",
+        flag: "🌋"
       }
     ];
 
@@ -2428,6 +2440,10 @@
 
     function renderRankedWordSelector() {
       const container = $("ranked-words-grid");
+      const countPill = $("ranked-count-pill");
+      if (countPill) countPill.textContent = `${RANKED_WORDS.length} Kata Resmi`;
+      const segSub = $("mode-seg-ranked-sub");
+      if (segSub) segSub.textContent = `${RANKED_WORDS.length} Kata Resmi, leaderboard`;
       if (!container) return;
       const userPBs = getRankedPBs();
       container.innerHTML = RANKED_WORDS.map(rw => {
