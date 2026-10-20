@@ -3117,9 +3117,6 @@
         return;
       }
       if (v.length === typed.length + 1) {
-        const now = performance.now();
-        if (lastKeyTime > 0 && now - lastKeyTime < 18) { inp.value = typed; toast("⚠️ Terlalu cepat! Ketik manual secara wajar."); return }
-        lastKeyTime = now;
         if (!started && v.length) start();
         const char = v[typed.length];
         keys++;
